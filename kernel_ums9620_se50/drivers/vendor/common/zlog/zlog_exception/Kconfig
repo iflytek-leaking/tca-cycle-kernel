@@ -1,0 +1,8 @@
+
+config VENDOR_LOG_EXCEPTION
+	tristate "VENDOR LOG EXCEPTION"
+	default n
+	help
+	  Say Y here, if supported vendor log exception
+
+

@@ -1,0 +1,22 @@
+# 旧内层内核仓库历史归档
+
+该仓库原为 `kernel_ums9620_se50/.git`（4 个提交，无远程）。
+为把整个 `tca kernel` 工作区统一为单一仓库，于本次 git 仓库化时删除。
+
+上游原始源码：https://github.com/Enceka/android_kernel_zte_ums9620_mifi_f50.git
+
+删除前的历史（自新到旧）：
+
+```
+3f4b97fd5344f4654b26a002e3ee3c19643df43a 2026-09-25 17:52:42 +0800 misakapardola
+    WIP: snapshot before ZTE-ZX2967 cleanup
+fb635c160a134133903cc1c6efa1fb7d69f6c450 2026-09-25 16:04:29 +0800 misakapardola
+    WIP: snapshot before debrand
+35c5914610e3fedad8c88c6435e7946b4caf7ed7 2026-09-25 15:08:03 +0800 misakapardola
+    power: supply: port iFlytek cm_sw_fast_charge_algo (CP/PPS SW fast charge)
+1e79a67b7b55e65cf78867827096a8e7cee21ce8 2025-05-11 00:50:32 +0800 Enceka
+    Update f50_defconfig
+```
+
+`1e79a67b7` 是上游源码的初始导入，可通过上面的仓库地址重新取得；
+其余三个是本次移植过程中的 WIP 快照，其内容已被后来的工作树状态完全覆盖。

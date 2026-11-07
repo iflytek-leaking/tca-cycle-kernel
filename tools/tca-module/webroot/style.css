@@ -1,0 +1,230 @@
+/* =========================================================
+   TCA Cycle Tuner - Material Design 3 (Material You)
+   tokens: https://m3.material.io/styles/color/roles
+   ========================================================= */
+
+/* ---------- MD3 色彩 token：暗色（默认） ---------- */
+:root{
+  --md-primary:#d0bcff;            --md-on-primary:#381e72;
+  --md-primary-container:#4f378b;  --md-on-primary-container:#eaddff;
+  --md-secondary:#ccc2dc;          --md-on-secondary:#332d41;
+  --md-secondary-container:#4a4458;--md-on-secondary-container:#e8def8;
+  --md-tertiary:#efb8c8;           --md-on-tertiary:#492532;
+  --md-error:#f2b8b5;              --md-on-error:#601410;
+  --md-error-container:#8c1d18;    --md-on-error-container:#f9dedc;
+  --md-surface:#141218;            --md-on-surface:#e6e0e9;
+  --md-surface-variant:#49454f;    --md-on-surface-variant:#cac4d0;
+  --md-surface-container-lowest:#0f0d13;
+  --md-surface-container-low:#1d1b20;
+  --md-surface-container:#211f26;
+  --md-surface-container-high:#2b2930;
+  --md-surface-container-highest:#36343b;
+  --md-outline:#938f99;            --md-outline-variant:#49454f;
+  --md-inverse-surface:#e6e0e9;    --md-inverse-on-surface:#322f35;
+  --md-elev-1:0 1px 3px 1px rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.3);
+  --md-elev-2:0 1px 2px rgba(0,0,0,.3),0 2px 6px 2px rgba(0,0,0,.15);
+  --md-elev-3:0 1px 3px rgba(0,0,0,.3),0 4px 8px 3px rgba(0,0,0,.15);
+  --r-xs:4px; --r-s:8px; --r-m:12px; --r-l:16px; --r-xl:28px; --r-full:999px;
+  --font:"Roboto","Noto Sans CJK SC","PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"Roboto Mono",Menlo,Consolas,monospace;
+  --state:rgba(230,224,233,.12);
+}
+
+/* ---------- MD3 色彩 token：亮色 ---------- */
+:root[data-theme="light"]{
+  --md-primary:#6750a4;            --md-on-primary:#ffffff;
+  --md-primary-container:#eaddff;  --md-on-primary-container:#21005d;
+  --md-secondary:#625b71;          --md-on-secondary:#ffffff;
+  --md-secondary-container:#e8def8;--md-on-secondary-container:#1d192b;
+  --md-tertiary:#7d5260;           --md-on-tertiary:#ffffff;
+  --md-error:#b3261e;              --md-on-error:#ffffff;
+  --md-error-container:#f9dedc;    --md-on-error-container:#410e0b;
+  --md-surface:#fef7ff;            --md-on-surface:#1d1b20;
+  --md-surface-variant:#e7e0ec;    --md-on-surface-variant:#49454f;
+  --md-surface-container-lowest:#ffffff;
+  --md-surface-container-low:#f7f2fa;
+  --md-surface-container:#f3edf7;
+  --md-surface-container-high:#ece6f0;
+  --md-surface-container-highest:#e6e0e9;
+  --md-outline:#79747e;            --md-outline-variant:#cac4d0;
+  --md-inverse-surface:#322f35;    --md-inverse-on-surface:#f5eff7;
+  --md-elev-1:0 1px 2px rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15);
+  --md-elev-2:0 1px 2px rgba(0,0,0,.3),0 2px 6px 2px rgba(0,0,0,.15);
+  --md-elev-3:0 1px 3px rgba(0,0,0,.3),0 4px 8px 3px rgba(0,0,0,.15);
+  --state:rgba(29,27,32,.12);
+}
+
+/* ---------- 基础 ---------- */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--md-surface); color:var(--md-on-surface);
+  font:400 14px/20px var(--font);
+  padding-bottom:calc(104px + env(safe-area-inset-bottom));
+  -webkit-tap-highlight-color:transparent;
+  transition:background .25s,color .25s;
+}
+.title-medium{font:500 16px/24px var(--font)}
+.body-large{font:400 16px/24px var(--font)}
+.support{font:400 12px/16px var(--font); color:var(--md-on-surface-variant)}
+.support.block{margin:0 0 10px}
+.hidden{display:none !important}
+
+/* ---------- 顶部线性进度 ---------- */
+.progress{position:fixed; top:0; left:0; right:0; height:4px; z-index:40; display:none; overflow:hidden; background:var(--md-surface-container-highest)}
+.progress.on{display:block}
+.progress-bar{position:absolute; height:100%; width:40%; border-radius:2px; background:var(--md-primary); animation:indeterminate 1.4s infinite}
+@keyframes indeterminate{0%{left:-40%} 100%{left:100%}}
+
+/* ---------- Top app bar ---------- */
+.top-app-bar{
+  position:sticky; top:0; z-index:10;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  height:64px; padding:0 4px 0 16px;
+  background:var(--md-surface-container);
+  transition:background .2s, box-shadow .2s;
+}
+.top-app-bar.scrolled{background:var(--md-surface-container-high); box-shadow:var(--md-elev-2)}
+.tab-titles{min-width:0; display:flex; flex-direction:column; justify-content:center}
+.tab-title{background:none; border:none; padding:0; text-align:left; display:flex; align-items:center; gap:10px; color:var(--md-on-surface)}
+.mark{display:grid; place-items:center; width:30px; height:30px; border-radius:9px; background:var(--md-primary-container); color:var(--md-on-primary-container); font:700 10px/1 var(--font); letter-spacing:.5px}
+.tt{font:400 19px/24px var(--font)}
+.kernel{font:400 11px/15px var(--font); color:var(--md-on-surface-variant); max-width:64vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.bar-actions{display:flex; gap:2px}
+
+/* ---------- Icon button ---------- */
+.icon-button{
+  position:relative; overflow:hidden; display:grid; place-items:center;
+  width:40px; height:40px; border:none; border-radius:50%; background:transparent;
+  color:var(--md-on-surface-variant); cursor:pointer; transition:color .15s;
+}
+.icon-button::after{content:""; position:absolute; inset:0; background:var(--md-on-surface); opacity:0; transition:opacity .12s; pointer-events:none}
+.icon-button:active::after{opacity:.12}
+.icon-button svg{width:24px; height:24px; fill:currentColor}
+
+/* ---------- Banner ---------- */
+.banner{margin:8px 16px 0; padding:12px 16px; border-radius:var(--r-m); background:var(--md-error-container); color:var(--md-on-error-container); border:1px solid var(--md-error); font:400 13px/18px var(--font)}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  position:sticky; top:64px; z-index:9;
+  display:flex; overflow-x:auto; scrollbar-width:none;
+  padding:0 8px; background:var(--md-surface);
+  border-bottom:1px solid var(--md-outline-variant);
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative; flex:0 0 auto; height:48px; padding:0 16px; border:none; background:transparent; color:var(--md-on-surface-variant); font:500 14px/20px var(--font); cursor:pointer; letter-spacing:.1px}
+.tab.active{color:var(--md-primary)}
+.tab-indicator{position:absolute; bottom:0; left:0; height:3px; width:0; border-radius:3px 3px 0 0; background:var(--md-primary); transition:transform .28s cubic-bezier(.2,0,0,1),width .28s cubic-bezier(.2,0,0,1)}
+
+/* ---------- Main / card ---------- */
+main{padding:12px 16px 24px}
+.panel{display:none}
+.panel.active{display:block; animation:fade .18s ease}
+@keyframes fade{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
+.card{background:var(--md-surface-container-low); border-radius:var(--r-m); padding:16px; margin-bottom:12px; box-shadow:var(--md-elev-1)}
+.card-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:12px}
+.card-head h2{margin:0; color:var(--md-on-surface)}
+.divider{height:1px; background:var(--md-outline-variant); margin:14px 0}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+@media (max-width:340px){.grid2{grid-template-columns:1fr}}
+
+/* ---------- Button 家族 ---------- */
+.filled-button,.tonal-button,.outlined-button,.text-button,.elevated-button{
+  position:relative; overflow:hidden;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:40px; padding:0 24px; border:none; border-radius:var(--r-full);
+  font:500 14px/20px var(--font); letter-spacing:.1px; white-space:nowrap;
+  cursor:pointer; transition:filter .15s, box-shadow .15s;
+}
+.filled-button::after,.tonal-button::after,.outlined-button::after,.text-button::after,.elevated-button::after{
+  content:""; position:absolute; inset:0; background:currentColor; opacity:0; transition:opacity .12s; pointer-events:none;
+}
+.filled-button:active::after,.tonal-button:active::after,.outlined-button:active::after,.text-button:active::after,.elevated-button:active::after{opacity:.12}
+.filled-button{background:var(--md-primary); color:var(--md-on-primary)}
+.tonal-button{background:var(--md-secondary-container); color:var(--md-on-secondary-container)}
+.elevated-button{background:var(--md-surface-container-low); color:var(--md-primary); box-shadow:var(--md-elev-1)}
+.outlined-button{background:transparent; color:var(--md-primary); border:1px solid var(--md-outline); padding:0 23px}
+.text-button{background:transparent; color:var(--md-primary); padding:0 12px}
+.outlined-button.danger,.text-button.danger{color:var(--md-error)}
+.outlined-button.danger{border-color:var(--md-error)}
+.full{width:100%}
+.ripple{position:absolute; border-radius:50%; background:currentColor; opacity:.18; transform:scale(0); animation:ripple .5s ease-out; pointer-events:none}
+@keyframes ripple{to{transform:scale(2.4); opacity:0}}
+
+/* ---------- Segmented button ---------- */
+.segmented{display:flex; border:1px solid var(--md-outline); border-radius:var(--r-full); overflow:hidden}
+.segmented button{position:relative; overflow:hidden; flex:1; min-height:40px; border:none; background:transparent; color:var(--md-on-surface); font:500 13px/18px var(--font); cursor:pointer; transition:background .15s,color .15s}
+.segmented button + button{border-left:1px solid var(--md-outline)}
+.segmented button.selected{background:var(--md-secondary-container); color:var(--md-on-secondary-container)}
+
+/* ---------- Switch（MD3） ---------- */
+.switch-row{position:relative; overflow:hidden; display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:56px; padding:6px 0; cursor:pointer}
+.sw-text{display:flex; flex-direction:column; gap:2px}
+.md-switch{position:relative; flex:0 0 auto; display:inline-flex; width:52px; height:32px}
+.md-switch input{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer}
+.md-switch .track{position:relative; width:52px; height:32px; border-radius:16px; border:2px solid var(--md-outline); background:var(--md-surface-container-highest); transition:background .2s,border-color .2s}
+.md-switch .track::after{content:""; position:absolute; top:50%; left:4px; transform:translateY(-50%); width:16px; height:16px; border-radius:50%; background:var(--md-outline); transition:left .2s,width .2s,height .2s,background .2s}
+.md-switch input:checked + .track{background:var(--md-primary); border-color:var(--md-primary)}
+.md-switch input:checked + .track::after{left:22px; width:24px; height:24px; background:var(--md-on-primary)}
+
+/* ---------- 文本字段（MD3 filled） ---------- */
+.field-row{display:flex; align-items:flex-end; gap:8px; margin:12px 0}
+.field-row .tonal-button,.field-row .filled-button,.field-row .text-button{flex:0 0 auto; margin-bottom:0}
+.text-field{position:relative; display:block; flex:1; min-width:0}
+.text-field > span{display:block; margin:0 0 4px 2px; font:400 12px/16px var(--font); color:var(--md-on-surface-variant)}
+.text-field input,.text-field select{
+  width:100%; min-height:48px; padding:12px 16px; border:1px solid var(--md-outline);
+  border-radius:var(--r-xs); background:var(--md-surface-container-highest); color:var(--md-on-surface);
+  font:400 16px/24px var(--font); appearance:none; outline:none; transition:border-color .15s,box-shadow .15s;
+}
+.text-field input:focus,.text-field select:focus{border-color:var(--md-primary); box-shadow:inset 0 0 0 1px var(--md-primary)}
+.text-field input::placeholder{color:transparent}
+.select-field select{
+  padding-right:40px;
+  background-image:linear-gradient(45deg,transparent 50%,var(--md-on-surface-variant) 50%),linear-gradient(135deg,var(--md-on-surface-variant) 50%,transparent 50%);
+  background-position:calc(100% - 21px) 22px,calc(100% - 16px) 22px;
+  background-size:5px 5px,5px 5px; background-repeat:no-repeat;
+}
+
+/* ---------- 输出块 ---------- */
+.out{background:var(--md-surface-container-highest); border-radius:var(--r-s); padding:12px; margin:12px 0 0; color:var(--md-on-surface-variant); font:400 11px/16px var(--mono); white-space:pre-wrap; word-break:break-word; max-height:280px; overflow:auto}
+
+/* ---------- Bottom sheet ---------- */
+.sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:15;
+  display:flex; flex-direction:column; max-height:72vh;
+  background:var(--md-surface-container-low);
+  border-radius:var(--r-xl) var(--r-xl) 0 0;
+  box-shadow:var(--md-elev-3);
+  transform:translateY(calc(100% - 72px));
+  transition:transform .3s cubic-bezier(.2,0,0,1);
+}
+.sheet.open{transform:translateY(0)}
+.sheet-head{position:relative; flex:0 0 auto; display:flex; align-items:center; gap:10px; width:100%; height:72px; padding:20px 56px 0 16px; border:none; background:transparent; color:var(--md-on-surface-variant); cursor:pointer; text-align:left}
+.grabber{position:absolute; top:8px; left:50%; transform:translateX(-50%); width:32px; height:4px; border-radius:2px; background:var(--md-outline-variant)}
+.sheet-title{display:flex; align-items:center; gap:8px; font:500 14px/20px var(--font)}
+.sheet-title svg{width:18px; height:18px; fill:currentColor}
+.chevron{position:absolute; right:12px; top:24px; transition:transform .3s}
+.chevron svg{width:24px; height:24px; fill:currentColor}
+.sheet.open .chevron{transform:rotate(180deg)}
+.sheet-body{display:none; overflow:auto; padding:0 16px calc(16px + env(safe-area-inset-bottom))}
+.sheet.open .sheet-body{display:block}
+.sheet-actions{display:flex; justify-content:flex-end}
+.out.log{max-height:46vh; margin-top:0}
+
+/* ---------- Snackbar ---------- */
+.snackbar{
+  position:fixed; left:16px; right:16px; bottom:calc(88px + env(safe-area-inset-bottom)); z-index:30;
+  padding:14px 16px; border-radius:var(--r-xs);
+  background:var(--md-inverse-surface); color:var(--md-inverse-on-surface);
+  font:400 14px/20px var(--font); box-shadow:var(--md-elev-3);
+  opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .2s,transform .2s;
+}
+.snackbar.show{opacity:1; transform:none}
+
+/* ---------- 宽屏居中 ---------- */
+@media (min-width:720px){
+  .top-app-bar,.tabs,main{max-width:760px; margin-left:auto; margin-right:auto}
+  .sheet{max-width:760px; margin:0 auto}
+}

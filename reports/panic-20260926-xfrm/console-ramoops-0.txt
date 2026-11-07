@@ -1,0 +1,278 @@
+[    0.004000]c0 [    T1] sprd-sysdump: [sysdump_info_init]vmcore info init end!
+[    0.448180]c4 [    T1] sprd_wdh: func_addr = 0xffffffc0110e0654 , pdg = 0x0 level = 0x0
+[    0.456038]c4 [    T1] sprd_wdh: func_addr = 0xffffffc0110e0968 , pdg = 0x2000081c6e001 level = 0x1
+[    0.465182]c4 [    T1] sprd_wdh: func_addr = 0x810e0584 , pdg = 0x0 level = 0x2
+[   57.300498]c4 [ T1241] systemserver cmd2 , get para: ( 50)
+[   87.309197]c4 [ T1241] systemserver cmd2 , get para: ( 50)
+[  117.316378]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  147.324059]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  177.331569]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  207.338484]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  237.346491]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  267.353859]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  297.360750]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  327.367838]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  357.375570]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  395.227615]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[  575.700560]c5 [ T1241] systemserver cmd2 , get para: ( 50)
+[  760.296596]c4 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 1010.121698]c4 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 1430.329139]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 1813.297286]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 1960.132666]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 2249.807811]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 2522.810993]c5 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 2568.738823]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 2598.746227]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 3005.433805]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 3305.977570]c4 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 3580.783381]c2 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 3841.128510]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 3980.843224]c0 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 4416.102448]c5 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 4732.496346]c0 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 4948.584977]c4 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 5204.698519]c0 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 5515.795924]c7 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 5728.949671]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6038.773392]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6407.250874]c5 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6441.004213]c1 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6487.020244]c5 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6560.045904]c4 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6662.640621]c0 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6697.674610]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6727.681281]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6757.687904]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6787.694575]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6852.326286]c3 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6926.575929]c5 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6967.094765]c2 [ T1241] systemserver cmd2 , get para: ( 50)
+[ 6994.026319]c3 [ T8246] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+[ 6994.032658]c3 [ T8246] sprd-sysdump: dump_die_cb save pregs_die_g ok .
+[ 6994.039144]c3 [ T8246] Modules linked in: sprd_ddr_dvfs sprd_apdu_r3p0 mipi_driver sprd_mipi sprd_cp_dvfs cpufreq_userspace sprd_compr_2stage_dma(O) sprd_dmaengine_pcm(O) snd_soc_sprd_dai(O) snd_soc_sprd_vbc_fe(O) snd_soc_sprd_vbc_v4(O) sprd_platform_pcm_routing(O) snd_soc_sprd_tdm(O) snd_soc_sprd_pdm_r2p0(O) snd_soc_sprd_pa_aw883xx(O) snd_soc_sprd_dummy_codec(O) snd_soc_unisoc_dp_codec(O) snd_soc_sprd_codec_ump9620(O) snd_soc_sprd_codec_ump9620_power_dev(O) snd_soc_sprd_codec_ump9620_power(O) snd_soc_sprd_card(O) voice_trigger_irq(O) sprd_audcp_boot(O) sprd_audcp_dvfs(O) mcdt_hw_r2p0(O) audio_pipe(O) sprd_apipe(O) asix audio_dsp_dump(O) audio_sipc(O) audio_mem(O) agdsp_access(O) sprd_wdf sprd_usb_f_rndis sprd_u_ether synaptics_td4320_spi_ts(O) nvt_touch_host(O) nvt_nt36xxx_spi_ts(O) focaltech_ft8756_spi_ts(O) misc_sprd_uid sprd_pmic_wdt ims_bridge sprd_map sy65153_wireless_charger bq2597x_charger bq2560x_charger was4780_i2c cps5601x_charger sgm415xx_charger sc8551_charger
+[ 6994.039205]c3 [ T8246]  cw221x_battery sc27xx_fuel_gauge sprd_charger_manager sprd_battery_info sc27xx_pd sprd_typec_displayport sc27xx_vibra thermal_generic_adc sprd_thermal_r5p0 sprd_thermal sprd_ump96xx_tsensor sc27xx_poweroff sc27xx_adc spi_sprd ax88179_178a musb_sprd dwc3_sprd sc27xx_typec sprd_tcpm sprd_pamu3 phy_sprd_usb31_qogirn6pro phy_sprd_qogirn6pro musb_hdrc sprd_usbm sprd_bc1p2 phy_sprd_commonphy pinctrl_sprd_qogirn6pro pinctrl_sprd zram zsmalloc leds_sc27xx_bltc ledtrig_pattern pinctrl gpio core microarray_fp(O) extcon_usb_gpio sprd_soc_thm mali_kbase(O) npu_img_vha(O) sprd_npu_cooling sprd_gpu_cooling sprd_cpu_cooling twofish_generic twofish_common arc4 aes_neon_blk aes_ce_ccm ghash_ce sha1_ce sprd_vdsp(O) mmdvfs(O) sprd_cpp(O) sprd_camera(O) sprd_sensor(O) vpu(O) sprd_drm(O) sprd_gsp(O) ptn38003a_i2c sprd_vpu_pw_domain(O) apsys_dvfs jpg(O) pwm_sprd unisoc_iommu sprd_ion(O) ion_cma_heap(C) ion_ipc_trusty(C) sprd_dma virt_dma sprd_camsys_pw_domain(O) flash_ic_aw36518(O)
+[ 6994.125062]c3 [ T8246]  flash_ic_ocp8137(O)
+[ 6994.191140]c7 [T16944] audit: audit_lost=7370 audit_rate_limit=5 audit_backlog_limit=64
+[ 6994.191242]c0 [  T373] type=1400 audit(1790423181.545:8580): avc: denied { sigkill } for comm="droidspaces" scontext=u:r:droidspacesd:s0 tcontext=u:r:droidspacesd:s0 tclass=process permissive=1
+[ 6994.191431]c0 [  T373] type=1400 audit(1790423181.545:8581): avc: denied { search } for comm="droidspaces" name="data" dev="dm-40" ino=100 scontext=u:r:droidspacesd:s0 tcontext=u:object_r:system_data_file:s0:c512,c768 tclass=dir permissive=1
+[ 6994.191641]c0 [  T373] type=1400 audit(1790423181.545:8582): avc: denied { search } for comm="droidspaces" name="com.termux" dev="dm-40" ino=66886 scontext=u:r:droidspacesd:s0 tcontext=u:object_r:app_data_file:s0:c160,c256,c512,c768 tclass=dir permissive=1
+[ 6994.191697]c0 [  T373] type=1400 audit(1790423181.545:8583): avc: denied { fork } for comm="droidspaces" scontext=u:r:droidspacesd:s0 tcontext=u:r:droidspacesd:s0 tclass=process permissive=1
+[ 6994.191886]c0 [  T373] type=1400 audit(1790423181.545:8584): avc: denied { execute } for comm="droidspaces" name="cmd" dev="dm-7" ino=54857201 scontext=u:r:droidspacesd:s0 tcontext=u:object_r:system_file:s0 tclass=file permissive=1
+[ 6994.195641]c0 [    T1] init: Untracked pid 15900 received signal 9
+[ 6994.195657]c0 [    T1] init: Untracked pid 15900 did not have an associated service entry and will not be reaped
+[ 6994.196304]c0 [    T1] init: Untracked pid 15901 exited with status 0
+[ 6994.196320]c0 [    T1] init: Untracked pid 15901 did not have an associated service entry and will not be reaped
+[ 6994.211789]c3 [ T8246]  sprd_flash_drv(O) trusty_tui gnss_pmnotify_ctl gnss_dbg gnss_common_ctl_all sprd_fm(O) sprdbt_tty(O) sprd_wlan_combo(O) wcn_bsp pcie_sprd pcie_sprd_misc sblock_bridge sbuf_bridge slog_bridge usb_f_vser sfp_core sipa_usb sipa_eth sipa_dele sipa_core sipa_sys sprd_modem_loader seth sipx spool spipe sprd_sipc_virt_bus sensorhub sipc_core unisoc_mailbox sprd_power_manager kfifo_buf sprd_power_stat sprd_pdbg sprd_pmic_syscon dwc3_sprd_core sdhci_sprd mmc_hsq mmc_swcq gpio_pmic_eic_sprd gpio_sprd gpio_eic_sprd sprd_shm trusty_virtio trusty_ipc trusty_irq trusty_log trusty_pm trusty sprd_manufacturer_model sprd_7sreset sprd_cpufreq_public sprd_cpufreq_v2 i2c_sprd nvmem_sprd_efuse nvmem_sc27xx_efuse sprd_hwspinlock ufs_sprd_qogirn6pro rpmb sprd_soc_id ump9621_regulator ump9620_regulator rtc_sc27xx sprd_ump96xx_spi spi_sprd_adi ums9620_clk clk_sprd sprd_time_sync_cp sprd_time_sync sprd_systimer sprd_sip_svc sprd_wdt_fiq
+[ 6994.215952]c7 [T16944] audit: rate limit exceeded
+[ 6994.223906]c3 [ T8246] CPU: 3 PID: 8246 Comm: kworker/u16:4 Tainted: G S      WC O      5.4.210-tca-cycle #30
+[ 6994.223908]c3 [ T8246] Hardware name: Spreadtrum UMS9620 SoC (DT)
+[ 6994.223922]c3 [ T8246] Workqueue: netns cleanup_net
+[ 6994.319128]c0 [  T719] sprd-wlan: beacon_rx=53, rssi_mgmt=-57
+[ 6994.322213]c3 [ T8246] pstate: 60c00005 (nZCv daif +PAN +UAO)
+[ 6994.322219]c3 [ T8246] pc : __slab_free+0x30c/0x370
+[ 6994.322222]c3 [ T8246] lr : kfree+0x2dc/0x444
+[ 6994.322224]c3 [ T8246] sp : ffffffc015f03be0
+[ 6994.322225]c3 [ T8246] x29: ffffffc015f03bf0 x28: 0000000000210d00 
+[ 6994.322228]c3 [ T8246] x27: ffffffc015f03d08 x26: ffffff8151768700 
+[ 6994.332193]c6 [  T719] ieee80211 phy0: channel num 1
+[ 6994.338485]c3 [ T8246] x25: ffffff8151768700 x24: 0000000000000001 
+[ 6994.338487]c3 [ T8246] x23: ffffff8151768700 x22: 0000000000000000 
+[ 6994.338490]c3 [ T8246] x21: ffffffff0525da00 x20: ffffff81f5c07c00 
+[ 6994.338492]c3 [ T8246] x19: ffffffff0525da00 x18: ffffffc01243d040 
+[ 6994.338495]c3 [ T8246] x17: 000000000018fcbe x16: 0000000000000053 
+[ 6994.338497]c3 [ T8246] x15: 0000000000000000 x14: 0087765181ffffff 
+[ 6994.338499]c3 [ T8246] x13: b78f43bbfce61563 x12: ff7889d0d0897eff 
+[ 6994.338502]c3 [ T8246] x11: b70835ea7d19ea9c x10: ffffff8151768700 
+[ 6994.338505]c3 [ T8246] x9 : ffffffff040f2680 x8 : 0000000040000000 
+[ 6994.338507]c3 [ T8246] x7 : ffffffffffffffff x6 : 00000000ffffffff 
+[ 6994.338509]c3 [ T8246] x5 : ffffffc010e81a7c x4 : 0000000000000001 
+[ 6994.338512]c3 [ T8246] x3 : ffffff8151768700 x2 : ffffff8151768700 
+[ 6994.343319]c0 [ T8251] [Awinic][4-0036]aw_monitor_get_chip_voltage: chip voltage is 3733
+[ 6994.343506]c2 [ T8248] [Awinic][4-0034]aw_monitor_get_chip_voltage: chip voltage is 3698
+[ 6994.343751]c0 [ T8251] [Awinic][4-0036]aw_monitor_get_chip_temperature: chip temperature = 32
+[ 6994.343932]c2 [ T8248] [Awinic][4-0034]aw_monitor_get_chip_temperature: chip temperature = 35
+[ 6994.347576]c2 [  T879] wlan0: sprd_cfg80211_get_station signal -57 noise=0, txlegacy 0 txmcs:5 txflags:0x:a, rxlegacy 0 rxmcs:8 rxflags:0x:4a
+[ 6994.355013]c3 [ T8246] x1 : ffffffff0525da00 x0 : ffffff81f5c07c00 
+[ 6994.355020]c3 [ T8246] 
+[ 6994.355020]c3 [ T8246] PC: 0xffffffc0104a13c4:
+[ 6994.355021]c3 [ T8246] 13c4  36000080 a940a269 f9000528 f9000109 d2802008 f2fbd5a8 52800449 aa090109
+[ 6994.355028]c3 [ T8246] 13e4  a900a668 f94007e1 aa1603e0 9430457f 79405668 f940e689 92403908 9100812a
+[ 6994.355040]c3 [ T8246] 1404  d503201f d503201f 5280002b cb0b03eb f82b015f 9100a129 d503201f d503201f
+[ 6994.355046]c3 [ T8246] 1424  cb0803e8 f828013f 39402a88 37180188 aa1403e0 aa1303e1 94000ba7 17ffff9b
+[ 6994.355053]c3 [ T8246] 1444  d4210000 5280002b 1400000b 17fffff2 1400000f 39402a88 361ffec8 900061e1
+[ 6994.355059]c3 [ T8246] 1464  91002260 913ba021 2a1f03e2 97fa0286 17ffff8e f9800151 c85f7d4c cb0b018c
+[ 6994.437735]c0 [T15909] [ASoC: PCM ] pcm Stop
+[ 6994.442152]c3 [ T8246] 1484  c80d7d4c 35ffffad 17fffff1 f9800131 c85f7d2a cb08014a c80b7d2a 35ffffab
+[ 6994.452045]c0 [T15909] [ASoC: VBC ] ap_vbc_aud_dma_chn_en fifo_id=AP01_PLY_FIFO, vbc_chan =VBC_ALL_CHAN, enable=0
+[ 6994.458078]c3 [ T8246] 14a4  17ffffed d10203ff f800865e a9027bfd a9036ffc a90467fa a9055ff8 a90657f6
+[ 6994.462925]c0 [T15909] [ASoC: VBC ] ap_vbc_fifo_enable fifo_id=AP01_PLY_FIFO, vbc_chan =VBC_ALL_CHAN, enable=0
+[ 6994.468634]c3 [ T8246] 
+[ 6994.468634]c3 [ T8246] LR: 0xffffffc01049f944:
+[ 6994.474728]c2 [ T8248] GPU_DVFS kbase_platform_modify_target_freq gpu_boost_level:10 min_freq=655MHz max_freq=655MHz target_freq=655MHz 
+[ 6994.479190]c3 [ T8246] f944  d503201f aa0803e0 aa1803e1 aa1403e2 48207c82 ca080000 ca180021 aa010000
+[ 6994.479197]c3 [ T8246] f964  aa0003f8 f9400f28 f1000508 b9001b28 540000e0 f9400f28 b40000a8 b5fff938
+[ 6994.479203]c3 [ T8246] f984  14000010 943035e1 17ffffd3 943035df b5fff898 1400000b 1400005b aa0a03f8
+[ 6994.479209]c3 [ T8246] f9a4  17fffff1 52800024 aa1603e0 aa1503e1 aa1403e2 aa1703e3 aa1303e5 940005de
+[ 6994.479216]c3 [ T8246] f9c4  a9427bfd a9464ff4 a94557f6 a9445ff8 f9401bf9 f85f8e5e 9101c3ff d65f03c0
+[ 6994.479222]c3 [ T8246] f9e4  f94002a8 37800068 2a1f03f3 14000002 394146b3 f94002a8 37800068 f94006a8
+[ 6994.479229]c3 [ T8246] fa04  36000808 12800008 d000d180 1ad32102 91270000 528000c1 2a1f03e3 97feb4f1
+[ 6994.479235]c3 [ T8246] fa24  aa1503e0 2a1303e1 97ff9914 17ffffe5 d4210000 d4210000 f000c7a9 d538d088
+[ 6994.479244]c3 [ T8246] 
+[ 6994.479244]c3 [ T8246] SP: 0xffffffc015f03b60:
+[ 6994.479245]c3 [ T8246] 3b60  00000001 00000000 51768700 ffffff81 51768700 ffffff81 15f03d08 ffffffc0
+[ 6994.479251]c3 [ T8246] 3b80  00210d00 00000000 15f03bf0 ffffffc0 1049f9c4 ffffffc0 15f03be0 ffffffc0
+[ 6994.479258]c3 [ T8246] 3ba0  104a1444 ffffffc0 60c00005 00000000 00000001 00000000 ce416200 ffffff81
+[ 6994.479264]c3 [ T8246] 3bc0  ffffffff ffffffff 80200017 00000000 15f03bf0 ffffffc0 104a1444 ffffffc0
+[ 6994.484492]c7 [ T8248] mali GPU_DVFS kbase_platform_set_freq_volt index = 5 cur_freq = 512 MHz cur_volt = 600 mV --> freq = 655 MHz volt = 650 mV gpu_power_on = 1 gpu_clock_on = 1 dcdc_state:1, gpu_temperature = 42.300, auto_efuse = T760, gpu_binning = 1.
+[ 6994.487759]c3 [ T8246] 3be0  61cf11b0 ffffff81 00000000 00000000 15f03c70 ffffffc0 1049f9c4 ffffffc0
+[ 6994.487765]c3 [ T8246] 3c00  11ea72a0 ffffffc0 15f03d08 ffffffc0 61cf11b0 ffffff81 70ef8000 ffffff81
+[ 6994.487771]c3 [ T8246] 3c20  02943f43 00000000 51768700 ffffff81 f5c07c00 ffffff81 0525da00 ffffffff
+[ 6994.528570]c5 [T15909] [ASoC: FE.VBC ] fe_hw_free fe dai: FE_DAI_ID_NORMAL_AP01(0) playback
+[ 6994.530076]c3 [ T8246] 3c40  51768700 ffffff81 10e81a7c ffffffc0 15f03c80 ffffffc0 10587b3c ffffffc0
+[ 6994.530084]c3 [ T8246] 
+[ 6994.530084]c3 [ T8246] X1: 0xffffffff0525d980:
+[ 6994.530085]c3 [ T8246] d980  00080034 40000000 0525d848 ffffffff 0525d9c8 ffffffff 75c92361 ffffff81
+[ 6994.530091]c3 [ T8246] d9a0  000bd405 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.551271]c2 [T15909] [ASoC: VBC ] scene_normal_hw_free: 7393:scene_normal_hw_free dai:BE_DAI_ID_NORMAL_AP01_P_HIFI(30) scene:VBC_DAI_ID_NORMAL_AP01 playback
+[ 6994.555002]c3 [ T8246] d9c0  00080034 40000000 0525d988 ffffffff 0525da48 ffffffff 75c92841 ffffff81
+[ 6994.555009]c3 [ T8246] d9e0  000bdc5b 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.555016]c3 [ T8246] da00  00000200 40000000 0494d0c8 ffffffff 002d0288 ffffffff f5c07c00 ffffff81
+[ 6994.555022]c3 [ T8246] da20  51768700 ffffff81 0020001c 00000000 ffffffff 00000001 00000000 00000000
+[ 6994.555029]c3 [ T8246] da40  00080034 40000000 0525d9c8 ffffffff 0525da88 ffffffff 75c92361 ffffff81
+[ 6994.555037]c3 [ T8246] da60  000bd486 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.555047]c3 [ T8246] 
+[ 6994.555047]c3 [ T8246] X5: 0xffffffc010e819fc:
+[ 6994.561280]c2 [T15909] [ASoC: VBC ] scene_normal_shutdown: 7298:scene_normal_shutdown dai:BE_DAI_ID_NORMAL_AP01_P_HIFI(30) scene:VBC_DAI_ID_NORMAL_AP01 playback
+[ 6994.567461]c3 [ T8246] 19fc  b0009c88 f9048500 b4000060 2a1f03e0 14000007 f9448280 97d87735 f904829f
+[ 6994.567468]c3 [ T8246] 1a1c  aa1303e0 97d87732 12800160 a9424ff4 f9400bf5 a8c37bfd f85f8e5e d65f03c0
+[ 6994.567474]c3 [ T8246] 1a3c  f800865e a9be7bfd f9000bf3 910003fd f9474000 f9401013 97dc1828 aa1303e0
+[ 6994.567480]c3 [ T8246] 1a5c  97d87723 b0009c88 f9448500 b40000a0 97dc1822 b0009c88 f9448100 97d8771c
+[ 6994.573728]c2 [T15909] [ASoC: VBC ] get_startup_scene_dac_id: 6154:get_startup_scene_dac_id scene is VBC_DAI_ID_NORMAL_AP01(id 0) dac_id = 0
+[ 6994.579922]c3 [ T8246] 1a7c  f9400bf3 a8c27bfd f85f8e5e d65f03c0 39c34408 37f80068 2a1f03e0 d65f03c0
+[ 6994.579928]c3 [ T8246] 1a9c  f940c408 5ac00829 b940090a 29422d08 4b0b014c 5100056b 6b0b015f 1100058a
+[ 6994.579935]c3 [ T8246] 1abc  54000083 6b0a013f 1a882500 d65f03c0 6b0a013f 1a9f37e9 4b090100 d65f03c0
+[ 6994.579941]c3 [ T8246] 1adc  f940c40a aa0003e8 b40000ea b9401549 b940014a eb0a153f 54000109 128002a0
+[ 6994.588120]c0 [T15909] [ASoC: VBC ] set_normal_p_running_status: 6003:set_normal_p_running_status is_startup=false
+[ 6994.589870]c6 [ T8248] mali GPU_DVFS kbase_platform_set_freq_volt index = 4 cur_freq = 655 MHz cur_volt = 600 mV --> freq = 512 MHz volt = 650 mV gpu_power_on = 1 gpu_clock_on = 1 dcdc_state:1, gpu_temperature = 42.300, auto_efuse = T760, gpu_binning = 1.
+[ 6994.596020]c3 [ T8246] 
+[ 6994.596020]c3 [ T8246] X9: 0xffffffff040f2600:
+[ 6994.596021]c3 [ T8246] 2600  00002014 40000000 0517ec48 ffffffff 040e9888 ffffffff dd9b7800 ffffff80
+[ 6994.596027]c3 [ T8246] 2620  00000e0b 00000000 00000021 00000000 ffffffff 00000002 f5cfc000 ffffff81
+[ 6994.596033]c3 [ T8246] 2640  00000200 40000000 07411ac8 ffffffff 03a3f208 ffffffff f5c07c00 ffffff81
+[ 6994.596040]c3 [ T8246] 2660  0bc99800 ffffff81 0020001f 00000000 ffffffff 00000001 00000000 00000000
+[ 6994.596046]c3 [ T8246] 2680  00000200 40000000 00000000 00000000 00000001 00000001 f5c07c00 ffffff81
+[ 6994.596052]c3 [ T8246] 26a0  0bc9a980 ffffff81 8020001e 00000000 ffffffff 00000001 00000000 00000000
+[ 6994.596058]c3 [ T8246] 26c0  00000200 40000000 00000100 dead0000 00000122 dead0000 f5c05000 ffffff81
+[ 6994.596065]c3 [ T8246] 26e0  00000000 00000000 00400040 00000000 ffffffff 00000001 00000000 00000000
+[ 6994.596075]c3 [ T8246] 
+[ 6994.596075]c3 [ T8246] X18: 0xffffffc01243cfc0:
+[ 6994.596076]c3 [ T8246] cfc0  ******** ******** ******** ******** ******** ******** ******** ********
+[ 6994.596087]c3 [ T8246] cfe0  ******** ******** ******** ******** ******** ******** ******** ********
+[ 6994.596094]c3 [ T8246] d000  100861b0 ffffffc0 102b6bd8 ffffffc0 102b087c ffffffc0 102b02a8 ffffffc0
+[ 6994.596100]c3 [ T8246] d020  10d27734 ffffffc0 10e74ab4 ffffffc0 10e81a7c ffffffc0 1049f9c4 ffffffc0
+[ 6994.604577]c0 [T15909] [Awinic][4-0034]aw883xx_shutdown: stream playback
+[ 6994.612992]c3 [ T8246] d040  100835cc ffffffc0 1008185c ffffffc0 1021fa08 ffffffc0 1022b218 ffffffc0
+[ 6994.612998]c3 [ T8246] d060  1022a0d0 ffffffc0 1022192c ffffffc0 10221a1c ffffffc0 10222880 ffffffc0
+[ 6994.613005]c3 [ T8246] d080  1042c8cc ffffffc0 1030b304 ffffffc0 103085fc ffffffc0 10307d50 ffffffc0
+[ 6994.613011]c3 [ T8246] d0a0  10307be8 ffffffc0 1109ecbc ffffffc0 1109d8e0 ffffffc0 106c58e8 ffffffc0
+[ 6994.613018]c3 [ T8246] 
+[ 6994.613018]c3 [ T8246] X19: 0xffffffff0525d980:
+[ 6994.613019]c3 [ T8246] d980  00080034 40000000 0525d848 ffffffff 0525d9c8 ffffffff 75c92361 ffffff81
+[ 6994.613025]c3 [ T8246] d9a0  000bd405 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.613031]c3 [ T8246] d9c0  00080034 40000000 0525d988 ffffffff 0525da48 ffffffff 75c92841 ffffff81
+[ 6994.613038]c3 [ T8246] d9e0  000bdc5b 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.613044]c3 [ T8246] da00  00000200 40000000 0494d0c8 ffffffff 002d0288 ffffffff f5c07c00 ffffff81
+[ 6994.625665]c0 [T15909] [Awinic][4-0036]aw883xx_shutdown: stream playback
+[ 6994.631861]c3 [ T8246] da20  51768700 ffffff81 0020001c 00000000 ffffffff 00000001 00000000 00000000
+[ 6994.631867]c3 [ T8246] da40  00080034 40000000 0525d9c8 ffffffff 0525da88 ffffffff 75c92361 ffffff81
+[ 6994.631873]c3 [ T8246] da60  000bd486 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.631881]c3 [ T8246] 
+[ 6994.631881]c3 [ T8246] X21: 0xffffffff0525d980:
+[ 6994.631881]c3 [ T8246] d980  00080034 40000000 0525d848 ffffffff 0525d9c8 ffffffff 75c92361 ffffff81
+[ 6994.638989]c0 [T15909] [ASoC: PCM ] sprd_pcm_close FE_DAI_ID_NORMAL_AP01 Close Playback
+[ 6994.647782]c3 [ T8246] d9a0  000bd405 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.647788]c3 [ T8246] d9c0  00080034 40000000 0525d988 ffffffff 0525da48 ffffffff 75c92841 ffffff81
+[ 6994.647795]c3 [ T8246] d9e0  000bdc5b 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.647801]c3 [ T8246] da00  00000200 40000000 0494d0c8 ffffffff 002d0288 ffffffff f5c07c00 ffffff81
+[ 6994.647808]c3 [ T8246] da20  51768700 ffffff81 0020001c 00000000 ffffffff 00000001 00000000 00000000
+[ 6994.647814]c3 [ T8246] da40  00080034 40000000 0525d9c8 ffffffff 0525da88 ffffffff 75c92361 ffffff81
+[ 6994.647821]c3 [ T8246] da60  000bd486 00000000 00000000 00000000 00000000 00000001 f5cfc000 ffffff81
+[ 6994.647829]c3 [ T8246] 
+[ 6994.647829]c3 [ T8246] X27: 0xffffffc015f03c88:
+[ 6994.647830]c3 [ T8246] 3c88  10e81a70 ffffffc0 15f03d08 ffffffc0 110db374 ffffffc0 11eb2218 ffffffc0
+[ 6994.647837]c3 [ T8246] 3ca8  11ea8468 ffffffc0 61cf1180 ffffff81 ce416200 ffffff81 15f03ce0 ffffffc0
+[ 6994.647843]c3 [ T8246] 3cc8  10e74ab4 ffffffc0 61cf1180 ffffff81 4db1b480 ffffff80 15f03d20 ffffffc0
+[ 6994.647849]c3 [ T8246] 3ce8  10d27734 ffffffc0 110d9c00 ffffffc0 110d9b1c ffffffc0 da53b240 ffffff81
+[ 6994.647855]c3 [ T8246] 3d08  4db1b4b0 ffffff80 b8994630 ffffff80 c7a69e00 1303eb9e 15f03d90 ffffffc0
+[ 6994.647861]c3 [ T8246] 3d28  102b02a8 ffffffc0 00000402 00000000 f5c22820 ffffff81 f572cb05 00000000
+[ 6994.649885]c6 [ T8248] GPU_DVFS kbase_platform_modify_target_freq gpu_boost_level:10 min_freq=655MHz max_freq=655MHz target_freq=655MHz 
+[ 6994.649901]c6 [ T8248] mali GPU_DVFS kbase_platform_set_freq_volt index = 5 cur_freq = 512 MHz cur_volt = 600 mV --> freq = 655 MHz volt = 650 mV gpu_power_on = 1 gpu_clock_on = 1 dcdc_state:1, gpu_temperature = 42.300, auto_efuse = T760, gpu_binning = 1.
+[ 6994.663802]c1 [T15909] [ASoC: VBC ] get_startup_scene_dac_id: 6154:get_startup_scene_dac_id scene is VBC_DAI_ID_NORMAL_AP01(id 0) dac_id = 0
+[ 6994.665966]c3 [ T8246] 3d48  000e000a 00000000 79c36e10 ffffff81 110e5a70 ffffffc0 f5c22800 ffffff81
+[ 6994.665973]c3 [ T8246] 3d68  11ea8430 ffffffc0 79c36e00 ffffff81 f572cb00 ffffff81 00000402 00000000
+[ 6994.665981]c3 [ T8246] 
+[ 6994.665981]c3 [ T8246] X29: 0xffffffc015f03b70:
+[ 6994.665982]c3 [ T8246] 3b70  51768700 ffffff81 15f03d08 ffffffc0 00210d00 00000000 15f03bf0 ffffffc0
+[ 6994.665988]c3 [ T8246] 3b90  1049f9c4 ffffffc0 15f03be0 ffffffc0 104a1444 ffffffc0 60c00005 00000000
+[ 6994.665995]c3 [ T8246] 3bb0  00000001 00000000 ce416200 ffffff81 ffffffff ffffffff 80200017 00000000
+[ 6994.666001]c3 [ T8246] 3bd0  15f03bf0 ffffffc0 104a1444 ffffffc0 61cf11b0 ffffff81 00000000 00000000
+[ 6994.666007]c3 [ T8246] 3bf0  15f03c70 ffffffc0 1049f9c4 ffffffc0 11ea72a0 ffffffc0 15f03d08 ffffffc0
+[ 6994.675397]c0 [T15909] [ASoC: VBC ] set_normal_p_running_status: 6003:set_normal_p_running_status is_startup=true
+[ 6994.684136]c3 [ T8246] 3c10  61cf11b0 ffffff81 70ef8000 ffffff81 02943f43 00000000 51768700 ffffff81
+[ 6994.684143]c3 [ T8246] 3c30  f5c07c00 ffffff81 0525da00 ffffffff 51768700 ffffff81 10e81a7c ffffffc0
+[ 6994.684149]c3 [ T8246] 3c50  15f03c80 ffffffc0 10587b3c ffffffc0 11eb2218 ffffffc0 11ea8468 ffffffc0
+[ 6994.684156]c3 [ T8246] 
+[ 6994.684158]c3 [ T8246] Call trace:
+[ 6994.684164]c3 [ T8246]  __slab_free+0x30c/0x370
+[ 6994.684167]c3 [ T8246]  kfree+0x2dc/0x444
+[ 6994.684172]c3 [ T8246]  xfrm_sysctl_fini+0x40/0x50
+[ 6994.684177]c3 [ T8246]  xfrm_net_exit+0x18/0x50
+[ 6994.684181]c3 [ T8246]  cleanup_net+0x2e4/0x55c
+[ 6994.684186]c3 [ T8246]  process_one_work+0x20c/0x560
+[ 6994.684188]c3 [ T8246]  worker_thread+0x280/0x50c
+[ 6994.684191]c3 [ T8246]  kthread+0x150/0x188
+[ 6994.684195]c3 [ T8246]  ret_from_fork+0x10/0x18
+[ 6994.684200]c3 [ T8246] Code: aa1403e0 aa1303e1 94000ba7 17ffff9b (d4210000) 
+[ 6994.684203]c3 [ T8246] ---[ end trace c0afa82ede3279e4 ]---
+[ 6994.720101]c6 [ T8248] mali GPU_DVFS kbase_platform_set_freq_volt index = 3 cur_freq = 655 MHz cur_volt = 600 mV --> freq = 384 MHz volt = 600 mV gpu_power_on = 1 gpu_clock_on = 1 dcdc_state:1, gpu_temperature = 42.300, auto_efuse = T760, gpu_binning = 1.
+[ 6994.756251]c0 [T15909] [Awinic][4-0034]aw883xx_startup: playback enter
+[ 6994.760568]c3 [ T8246] Kernel panic - not syncing: Fatal exception
+[ 6994.769682]c0 [T15909] [Awinic]aw_cali_get_cali_re_from_file: channel:0 open /mnt/vendor/productinfo/audio/aw_cali.bin failed!
+[ 6994.779731]c3 [ T8246] SMP: stopping secondary CPUs
+[ 6994.779737]c1 [    C1] CPU1: stopping...
+[ 6994.779799]c2 [    C2] CPU2: stopping...
+[ 6994.779852]c4 [    C4] CPU4: stopping...
+[ 6994.779926]c5 [    C5] CPU5: stopping...
+[ 6994.780007]c6 [    C6] CPU6: stopping...
+[ 6994.780087]c0 [    C0] CPU0: stopping...
+[ 6994.780259]c7 [    C7] CPU7: stopping...
+[ 6994.780636]c3 [ T8246] ddr_cur_freq: 6
+[ 6994.780641]c3 [ T8246] ufs_sprd_cmd_history_dump_trace: NO UFS cmd was recorded
+[ 6994.808843]c3 [ T8246] unisoc-mailbox smsg_senddie mailbox send die smsg
+[ 6994.808850]c3 [ T8246] sprd-sysdump: (sysdump_panic_event) ------ in (0)
+[ 6995.809055]c3 [ T8246] sprd-sysdump: 
+[ 6995.809058]c3 [ T8246] sprd-sysdump: *****************************************************
+[ 6995.809060]c3 [ T8246] sprd-sysdump: *                                                   *
+[ 6995.809062]c3 [ T8246] sprd-sysdump: *  Sysdump enter, preparing debug info to dump ...  *
+[ 6995.809063]c3 [ T8246] sprd-sysdump: *                                                   *
+[ 6995.809064]c3 [ T8246] sprd-sysdump: *****************************************************
+[ 6995.809065]c3 [ T8246] sprd-sysdump: 
+[ 6995.809071]c3 [ T8246] sprd-sysdump: reason: Fatal exception, sprd_sysdump_info->crash_key: 0
+[ 6995.809181]c3 [ T8246] sprd-sysdump: KTXT VERIFY...
+[ 6995.993750]c3 [ T8246] sprd-sysdump: KTXT [0xffffffc010081000--0xffffffc0110f0000]
+[ 6995.993753]c3 [ T8246] sprd-sysdump: SHA1:
+[ 6995.993755]c3 [ T8246] sprd-sysdump: 382fb204 44d2ce95 ac27d3c7 a6f3967b d3c7558d
+[ 6995.993756]c3 [ T8246] sprd-sysdump: 
+[ 6995.993757]c3 [ T8246] sprd-sysdump: *****************************************************
+[ 6995.993758]c3 [ T8246] sprd-sysdump: *                                                   *
+[ 6995.993760]c3 [ T8246] sprd-sysdump: *  Try to reboot system ...                         *
+[ 6995.993761]c3 [ T8246] sprd-sysdump: *                                                   *
+[ 6995.993762]c3 [ T8246] sprd-sysdump: *****************************************************
+[ 6995.993762]c3 [ T8246] sprd-sysdump: 
+[ 6996.993982]c3 [ T8246] Kernel Offset: disabled
+[ 6996.993988]c3 [ T8246] CPU features: 0x00030006,2a00a238
+[ 6996.993990]c3 [ T8246] Memory Limit: none
+[ 6996.993995]c3 [ T8246] trusty-log panic notifier - trusty version Unisoc TEE v2.1.1, qogirn6pro, Built: 12:32:34 Jul 19 2023, 267fd70d (builder@zishcicd0114)
+[ 6996.994019]c3 [ T8246] kmsg get flag is 1, return
+[ 6998.367753]c3 [ T8246] Rebooting in 5 seconds..

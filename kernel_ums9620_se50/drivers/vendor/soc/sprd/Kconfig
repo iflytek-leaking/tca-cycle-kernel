@@ -1,0 +1,9 @@
+#
+# Kconfig for the sprd kernel device drivers.
+#
+
+config VENDOR_BOOTREASON
+	tristate "Vendor Bootreason"
+	default n
+	help
+	  Say Y here, support vendor bootreason.

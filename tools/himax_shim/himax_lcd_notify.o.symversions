@@ -1,0 +1,2 @@
+__crc_himax_resume_by_lcd = 0xd79063d2;
+__crc_himax_int_enable = 0x01633f89;

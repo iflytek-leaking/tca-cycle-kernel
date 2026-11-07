@@ -1,0 +1,181 @@
+diff --git a/kernel/Kbuild b/kernel/Kbuild
+index caac3096..4f1c8370 100644
+--- a/kernel/Kbuild
++++ b/kernel/Kbuild
+@@ -96,6 +96,15 @@ else
+   $(info -- $(REPO_NAME) version (Github): $(KSU_VERSION_FULL))
+ endif
+ 
++# Fallback: ReSukiSU v4.1.0 tags don't match upstream SukiSU-Ultra's REPO_BRANCH,
++# so the online/local version probes can yield empty values. Pin them.
++ifeq ($(strip $(KSU_VERSION)),)
++KSU_VERSION := 41000
++endif
++ifeq ($(strip $(KSU_VERSION_FULL)),)
++KSU_VERSION_FULL := v4.1.0-ReSukiSU
++endif
++
+ ccflags-y += -DKSU_VERSION=$(KSU_VERSION)
+ ccflags-y += -DKSU_VERSION_FULL=\"$(KSU_VERSION_FULL)\"
+ 
+@@ -156,3 +165,15 @@ endif
+ 
+ ccflags-y += -Wno-strict-prototypes -Wno-int-conversion -Wno-gcc-compat -Wno-missing-prototypes
+ ccflags-y += -Wno-declaration-after-statement -Wno-unused-function -Wno-unused-variable
++
++# --- 5.4 compatibility (TCA Cycle Kernel) ---
++# TWA_RESUME task_work notify enum only exists from 5.8; 5.4 uses a bool.
++ifeq ($(shell test $(VERSION) -eq 5 -a $(PATCHLEVEL) -lt 8; echo $$?),0)
++ccflags-y += -DTWA_RESUME=true
++ccflags-y += -include $(srctree)/include/linux/sched/task.h
++endif
++
++# 5.4 (Android ACK) has seccomp_filter_release() but not put_seccomp_filter().
++ccflags-y += -Dput_seccomp_filter=seccomp_filter_release
++# 5.8 renamed strncpy_from_unsafe_user() -> strncpy_from_user_nofault().
++ccflags-y += -Dstrncpy_from_user_nofault=strncpy_from_unsafe_user
+diff --git a/kernel/manual_su.c b/kernel/manual_su.c
+index dfb3a251..3852511d 100644
+--- a/kernel/manual_su.c
++++ b/kernel/manual_su.c
+@@ -8,6 +8,7 @@
+ #include <linux/mm.h>
+ #include <linux/slab.h>
+ #include <linux/binfmts.h>
++#include <linux/random.h>
+ 
+ #include "manual_su.h"
+ #include "ksu.h"
+diff --git a/kernel/pkg_observer.c b/kernel/pkg_observer.c
+index b632cd15..63f536b9 100644
+--- a/kernel/pkg_observer.c
++++ b/kernel/pkg_observer.c
+@@ -23,6 +23,7 @@ struct watch_dir {
+ 
+ static struct fsnotify_group *g;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0)
+ static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask,
+                   struct inode *inode, struct inode *dir,
+                   const struct qstr *file_name, u32 cookie)
+@@ -45,6 +46,32 @@ static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask,
+ static const struct fsnotify_ops ksu_ops = {
+     .handle_inode_event = ksu_handle_inode_event,
+ };
++#else
++/* 5.4 fsnotify: single handle_event() with the old signature */
++static int ksu_handle_event(struct fsnotify_group *group, struct inode *inode,
++                  u32 mask, const void *data, int data_type,
++                  const struct qstr *file_name, u32 cookie,
++                  struct fsnotify_iter_info *iter_info)
++{
++    if (!file_name)
++        return 0;
++    if (mask & FS_ISDIR)
++        return 0;
++    if (file_name->len == 13 &&
++        !memcmp(file_name->name, "packages.list", 13)) {
++        pr_info("packages.list detected: %d\n", mask);
++        if (ksu_uid_scanner_enabled) {
++            ksu_request_userspace_scan();
++        }
++        track_throne(false);
++    }
++    return 0;
++}
++
++static const struct fsnotify_ops ksu_ops = {
++    .handle_event = ksu_handle_event,
++};
++#endif
+ 
+ static int add_mark_on_inode(struct inode *inode, u32 mask,
+                  struct fsnotify_mark **out)
+diff --git a/kernel/selinux/rules.c b/kernel/selinux/rules.c
+index cd7c4720..05ec8975 100644
+--- a/kernel/selinux/rules.c
++++ b/kernel/selinux/rules.c
+@@ -9,15 +9,22 @@
+ #include "linux/lsm_audit.h" // IWYU pragma: keep
+ #include "xfrm.h"
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 4, 0)
+ #define SELINUX_POLICY_INSTEAD_SELINUX_SS
++#endif
+ 
+ #define ALL NULL
+ 
+ static struct policydb *get_policydb(void)
+ {
+     struct policydb *db;
++#ifdef SELINUX_POLICY_INSTEAD_SELINUX_SS
+     struct selinux_policy *policy = selinux_state.policy;
+     db = &policy->policydb;
++#else
++    struct selinux_ss *ss = selinux_state.ss;
++    db = &ss->policydb;
++#endif
+     return db;
+ }
+ 
+diff --git a/kernel/selinux/sepolicy.c b/kernel/selinux/sepolicy.c
+index b8e0ec8c..bd3e8fa6 100644
+--- a/kernel/selinux/sepolicy.c
++++ b/kernel/selinux/sepolicy.c
+@@ -495,6 +495,7 @@ static const struct hashtab_key_params filenametr_key_params = {
+ };
+ #endif
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0)
+ static bool add_filename_trans(struct policydb *db, const char *s,
+                    const char *t, const char *c, const char *d,
+                    const char *o)
+@@ -561,6 +562,16 @@ static bool add_filename_trans(struct policydb *db, const char *s,
+     db->compat_filename_trans_count++;
+     return ebitmap_set_bit(&trans->stypes, src->value - 1, 1) == 0;
+ }
++#else
++static bool add_filename_trans(struct policydb *db, const char *s,
++                   const char *t, const char *c, const char *d,
++                   const char *o)
++{
++    pr_warn("sepolicy: filename_transition unsupported on <5.9 kernels (%s/%s/%s)\n",
++        s, t, c);
++    return false;
++}
++#endif
+ 
+ static bool add_genfscon(struct policydb *db, const char *fs_name,
+              const char *path, const char *context)
+diff --git a/kernel/sucompat.c b/kernel/sucompat.c
+index f24e9b39..2a212ef9 100644
+--- a/kernel/sucompat.c
++++ b/kernel/sucompat.c
+@@ -2,7 +2,12 @@
+ #include <linux/preempt.h>
+ #include <linux/printk.h>
+ #include <linux/mm.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 8, 0)
++#include <asm/pgtable.h>
++#else
+ #include <linux/pgtable.h>
++#endif
+ #include <linux/uaccess.h>
+ #include <asm/current.h>
+ #include <linux/cred.h>
+diff --git a/kernel/util.c b/kernel/util.c
+index 0e2d5e1d..602d0d42 100644
+--- a/kernel/util.c
++++ b/kernel/util.c
+@@ -1,5 +1,10 @@
+ #include <linux/mm.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
+ #include <linux/pgtable.h>
++#else
++#include <asm/pgtable.h>
++#endif
+ #include <linux/printk.h>
+ #include <asm/current.h>
+ 

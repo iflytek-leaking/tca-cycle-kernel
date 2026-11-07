@@ -1,0 +1,23 @@
+TCA Cycle Kernel — 第三方组件与来源说明
+
+1. Linux 内核
+   kernel_ums9620_se50/ 基于 Linux 5.4.210（GPL-2.0）。
+
+2. BakaSU（原 ReSukiSU，kernel_ums9620_se50/KernelSU，源码内置）
+   GPL-2.0 — https://github.com/Baka-SU/BakaSU
+
+3. AnyKernel3（anykernel3/）
+   GPL-2.0 — https://github.com/osm0sis/AnyKernel3
+   tools/ 下的 busybox / magiskboot / magiskpolicy 等为上游预编译工具，
+   版权归各自作者，遵循其原始许可证。
+
+4. Kasumi（tools/kasumi/）
+   GPL-2.0 — 见该目录下的 LICENSE / NOTICE / LICENSE-GPL-2.0
+
+5. 本项目新增内容（drivers/tca_fas/、触摸相关修改、tools/tca-tune.sh、
+   tools/tca-module/、build.sh 等）
+   GPL-2.0, TCA Cycle Kernel contributors
+
+免责声明
+本仓库与 iFlytek、ZTE、Unisoc 官方无关。刷机可能导致设备无法启动，
+请自行备份并承担风险。仓库中不包含任何原厂签名镜像、厂商 .ko 或固件。

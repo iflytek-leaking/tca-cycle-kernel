@@ -1,0 +1,9 @@
+obj-$(CONFIG_VENDOR_CRYPTO_VEB_A5) += vendor_crypto.o
+vendor_crypto-objs := veb_spi.o
+vendor_crypto-objs += veb_platform.o
+vendor_crypto-objs += veb_base.o
+vendor_crypto-objs += veb_crc.o
+vendor_crypto-objs += veb_sha.o
+vendor_crypto-objs += veb_smartcard.o
+vendor_crypto-objs += veb_a5_upgrade.o
+#veb_a5spi-objs += veb_a5_upgrade_smart.o

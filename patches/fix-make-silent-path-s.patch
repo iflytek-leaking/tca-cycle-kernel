@@ -1,0 +1,18 @@
+diff --git a/Makefile b/Makefile
+index 398e33404..d1c77ab41 100644
+--- a/Makefile
++++ b/Makefile
+@@ -88,9 +88,11 @@ else
+ endif
+ 
+ # If the user is running make -s (silent mode), suppress echoing of
+-# commands
++# commands.  Only inspect the leading single-letter flags: MAKEFLAGS also
++# carries paths (e.g. -I<dir>, O=<dir>) which may contain 's' and would
++# otherwise force silence.
+ 
+-ifneq ($(findstring s,$(filter-out --%,$(MAKEFLAGS))),)
++ifneq ($(findstring s,$(firstword $(filter-out --%,$(MAKEFLAGS)))),)
+   quiet=silent_
+ endif
+ 

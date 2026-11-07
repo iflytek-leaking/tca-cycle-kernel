@@ -1,0 +1,26 @@
+diff --git a/arch/arm64/configs/f50_defconfig b/arch/arm64/configs/f50_defconfig
+index 9a1c6855f..3a0573e1f 100755
+--- a/arch/arm64/configs/f50_defconfig
++++ b/arch/arm64/configs/f50_defconfig
+@@ -6303,7 +6303,7 @@ CONFIG_FRAME_WARN=4096
+ # CONFIG_STRIP_ASM_SYMS is not set
+ # CONFIG_READABLE_ASM is not set
+ CONFIG_DEBUG_FS=y
+-CONFIG_HEADERS_INSTALL=y
++# CONFIG_HEADERS_INSTALL is not set
+ CONFIG_OPTIMIZE_INLINING=y
+ # CONFIG_DEBUG_SECTION_MISMATCH is not set
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+diff --git a/scripts/Makefile b/scripts/Makefile
+index b12691ae7..5401b6b5e 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -28,7 +28,7 @@ HOSTCFLAGS_sortextable.o = -I$(srctree)/tools/include
+ HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
+ HOSTCFLAGS_sign-file.o = $(CRYPTO_CFLAGS)
+ HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
+-HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
++HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS) -Wno-deprecated-declarations
+ HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
+ 
+ always		:= $(hostprogs-y) $(hostprogs-m)

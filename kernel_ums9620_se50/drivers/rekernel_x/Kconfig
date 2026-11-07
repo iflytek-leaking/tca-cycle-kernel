@@ -1,0 +1,8 @@
+config REKERNEL_X
+	bool "ReKernel-X: 墓碑（冻结进程）事件上报"
+	depends on ANDROID_BINDER_IPC
+	default n
+	help
+	  为墓碑/冻结类模块提供内核支持：冻结进程收到 Binder 调用、关键信号、
+	  入站网络包时，通过 Generic Netlink (family "rekernel_x2") 上报用户态。
+	  上游: https://github.com/myflavor/ReKernel-X  (原本只支持 >= 5.10)

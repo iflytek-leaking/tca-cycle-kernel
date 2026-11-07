@@ -1,0 +1,5 @@
+Vendored copy of BakaSU (formerly ReSukiSU)
+Upstream: https://github.com/Baka-SU/BakaSU
+Commit  : 516d3e87fbc986ccefdde2c2765f1700612441a9 (v4.2.0-rc3-86-g516d3e87)
+KSU VC  : 35257
+Note    : 源码内置（非 git submodule），便于离线构建。

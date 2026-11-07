@@ -1,0 +1,8 @@
+# LCD backlight power ctrl
+config VENDOR_LCDBL_I2C_CTRL_VSP_VSN
+	tristate "VENDOR LCD backlight power ctrl"
+
+        default n
+config VENDOR_LCDBL_I2C_CTRL_VSP_VSN_ENHANCE
+        bool "Support for VENDOR vsp vsn power enhance ctrl"
+        default n

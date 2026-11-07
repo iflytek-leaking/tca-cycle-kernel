@@ -1,0 +1,319 @@
+diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
+index d3fc12641..05da2245d 100644
+--- a/drivers/power/supply/charger-manager.c
++++ b/drivers/power/supply/charger-manager.c
+@@ -1412,6 +1412,9 @@ static bool cm_primary_charger_enable(struct charger_manager *cm, bool enable)
+ 		return false;
+ 	}
+ 
++	/* ported from iFlytek: mirror only a successful CALIBRATE write */
++	cm->desc->sw_charge_status = enable;
++
+ 	return true;
+ }
+ 
+@@ -1707,6 +1710,9 @@ static void cm_update_charge_info(struct charger_manager *cm, int cmd)
+ 		if (desc->cp.cp_running && !desc->cp.recovery) {
+ 			desc->charge_limit_cur = desc->cur.flash_cur;
+ 			desc->input_limit_cur = desc->cur.flash_limit;
++			/* ported from iFlytek: stock refreshes the SW current upper
++			 * bound here from the vendor battery-info field. */
++			desc->switch_charge_max_ibat = desc->cur.switch_charge_max_ibat;
+ 			thm_info->adapter_default_charge_vol = 11;
+ 			if (desc->jeita_size[SPRD_BATTERY_JEITA_FLASH]) {
+ 				desc->jeita_tab = desc->jeita_tab_array[SPRD_BATTERY_JEITA_FLASH];
+@@ -3089,6 +3095,84 @@ static int cm_cp_ibus_step_algo(struct charger_manager *cm)
+ 	return ibus_step;
+ }
+ 
++/* ported from iFlytek: cm_sw_fast_charge_algo (stock .text 0x8018-0x82d4)
++ *
++ * Software fast-charge current closed loop for the pps_with_dcdc path.
++ * Constants are kept in the stock units: currents uA, voltages uV.
++ */
++static void cm_sw_fast_charge_algo(struct charger_manager *cm)
++{
++	struct charger_desc *desc = cm->desc;
++	int step_ocp, step_ovp, step, base, val;
++
++	if (!desc->sw_charge_status)
++		return;
++
++	if (desc->cp.ibat_uA > desc->cp.cp_target_ibat && desc->cp.ibus_uA <= 550000)
++		step_ocp = -1;
++	else
++		step_ocp = (desc->sw_charge_current < desc->switch_charge_max_ibat);
++
++	if (!desc->ovp_flag) {
++		if (desc->cp.vbat_uV >= desc->jeita_vbat) {
++			desc->ovp_flag = true;
++		} else {
++			step_ovp = (desc->sw_charge_current < desc->switch_charge_max_ibat);
++			goto have_steps;
++		}
++	}
++
++	dev_info(cm->dev, "%s, have switch ovp_flag, jeita_vbat %d\n",
++		 __func__, desc->jeita_vbat);
++
++	if (desc->cp.vbat_uV < desc->jeita_vbat || desc->cp.ibus_uA > 550000)
++		step_ovp = 0;
++	else
++		step_ovp = -1;
++
++have_steps:
++	/* ported from iFlytek: PPS reach-drop protection */
++	if (desc->pps_reach_drop != 0 &&
++	    desc->cp.ibus_uA <= 550000 &&
++	    desc->cp.vbat_uV >= desc->cp.cp_target_vbat - desc->pps_reach_drop - 20000)
++		step_ovp = -1;
++
++	base = min(desc->sw_charge_current, desc->switch_charge_max_ibat);
++	cm_vote_property(cm, desc->cp.cp_target_vbat + 200000,
++			 desc->psy_charger_stat,
++			 POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX);
++
++	step = min(step_ocp, step_ovp);
++	val = base + step * 100000;
++	dev_info(cm->dev, ">>>>>>charge_current: %d\n", val);
++
++	if (desc->sw_charge_current > 99999 &&
++	    val <= desc->switch_charge_max_ibat &&
++	    val >= desc->charge_term_current + 100000) {
++		desc->sw_charge_current = val;
++		if (step == 1)
++			cm_primary_charger_enable(cm, true);
++		cm->cm_charge_vote->vote(cm->cm_charge_vote, true,
++					 SPRD_VOTE_TYPE_IBAT,
++					 SPRD_VOTE_TYPE_IBAT_ID_IFLYTEK,
++					 SPRD_VOTE_CMD_MIN,
++					 desc->sw_charge_current, cm);
++		dev_info(cm->dev, ">>>>>>final sw_charge_current: %d\n",
++			 desc->sw_charge_current);
++	} else {
++		if (val < 100000)
++			cm_primary_charger_enable(cm, false);
++	}
++
++	dev_info(cm->dev,
++		 "\n>>>>>>>fast_charge_algo:step: %d\n"
++		 ">>>>>> step_otp_charge: %d\n"
++		 ">>>>>>>step_ocp_charge: %d\n"
++		 ">>>>>>>step_ovp_charge: %d\n"
++		 ">>>>>>>sw_charge_status: %d\n",
++		 step, 0, step_ocp, step_ovp, desc->sw_charge_status);
++}
++
+ static bool cm_cp_tune_algo(struct charger_manager *cm)
+ {
+ 	struct cm_charge_pump_status *cp = &cm->desc->cp;
+@@ -3098,6 +3182,7 @@ static bool cm_cp_tune_algo(struct charger_manager *cm)
+ 	int vbus_step = 0;
+ 	int ibus_step = 0;
+ 	int alarm_step = 0;
++	int sw_alarm = 60000;	/* ported from iFlytek: default when pps_with_dcdc off */
+ 	bool is_taper_done = false;
+ 
+ 	/* check taper done*/
+@@ -3113,6 +3198,42 @@ static bool cm_cp_tune_algo(struct charger_manager *cm)
+ 		}
+ 	}
+ 
++	/* ported from iFlytek: pps_with_dcdc SW fast charge path (stock 0x7a34) */
++	if (cm->desc->pps_with_dcdc) {
++		if (cp->cp_target_ibat < cm->desc->switch_charge_max_ibat + 550000) {
++			if (cm->desc->sw_charge_status) {
++				dev_info(cm->dev, "%s, target ibat %d is too low for pps_with_dcdc, try disable dcdc\n",
++					 __func__, cp->cp_target_ibat);
++				cm_primary_charger_enable(cm, false);
++				cm->desc->sw_charge_current = 0;
++			}
++		} else {
++			if (!cm->desc->sw_charge_status) {
++				dev_info(cm->dev, "%s, target ibat %d when pps_with_dcdc, try enable dcdc\n",
++					 __func__, cp->cp_target_ibat);
++				cm_primary_charger_enable(cm, true);
++				cm->desc->sw_charge_current =
++					cm->desc->switch_charge_max_ibat / 2;
++			}
++		}
++
++		/*
++		 * ported from iFlytek: sw_alarm step. Stock used the unnamed
++		 * desc fields d156/d160/d164/d168 (mA/mV) compared as
++		 * (field * 1000); 原厂 stores the cp limits in uA/uV already.
++		 */
++		if (cp->cp_max_ibus < cp->ibus_uA || cp->cp_max_ibat < cp->ibat_uA)
++			sw_alarm = -40000;
++		else if (cp->cp_target_vbus < cp->vbus_uV)
++			sw_alarm = -40000;
++		else if (cp->cp_target_vbat < cp->vbat_uV)
++			sw_alarm = 60000;
++		else
++			sw_alarm = -40000;
++
++		cm_sw_fast_charge_algo(cm);
++	}
++
+ 	/* check battery voltage*/
+ 	vbat_step = cm_cp_vbat_step_algo(cm);
+ 
+@@ -3145,8 +3266,9 @@ static bool cm_cp_tune_algo(struct charger_manager *cm)
+ 		alarm_step = CM_CP_VSTEP * 3;
+ 	}
+ 
+-	cp->cp_target_vbus += min(min(min(min(vbat_step, ibat_step),
+-					  vbus_step), ibus_step), alarm_step);
++	/* ported from iFlytek: stock aggregates sw_alarm as the 6th step */
++	cp->cp_target_vbus += min(min(min(min(min(vbat_step, ibat_step),
++					  vbus_step), ibus_step), alarm_step), sw_alarm);
+ 	cm_check_target_vbus(cm);
+ 
+ 	dev_info(cm->dev, "%s vbatt = %duV, ibatt = %duA, vbus = %duV, ibus = %duA, "
+@@ -3329,6 +3451,27 @@ static void cm_cp_state_check_vbus(struct charger_manager *cm)
+ 		if (!cm_check_cp_charger_enabled(cm))
+ 			cm_cp_charger_enable(cm, true);
+ 
++		/*
++		 * ported from iFlytek: pps_with_dcdc SW current bookkeeping on
++		 * "volt tune ok" (stock 0x691c-0x6978). Guarded by pps_with_dcdc
++		 * so the non-iFlytek path is untouched.
++		 */
++		if (cm->desc->pps_with_dcdc) {
++			if (cp->cp_target_ibat <=
++			    cm->desc->switch_charge_max_ibat + 550000) {
++				cm->desc->sw_charge_current = 0;
++			} else {
++				dev_info(cm->dev, "target ibat %d when pps_with_dcdc, try enable dcdc\n",
++					 cp->cp_target_ibat);
++				cm_primary_charger_enable(cm, true);
++				cm->desc->sw_charge_current =
++					cm->desc->switch_charge_max_ibat;
++			}
++		}
++		dev_info(cm->dev, "volt tune ok, cp_target_ibat %d switch_charge_max_ibat %d sw_charge_status %d\n",
++			 cp->cp_target_ibat, cm->desc->switch_charge_max_ibat,
++			 cm->desc->sw_charge_status);
++
+ 		cm->desc->cm_check_fault = true;
+ 		return;
+ 	}
+@@ -4163,6 +4306,11 @@ static bool cm_manager_adjust_current(struct charger_manager *cm, int jeita_stat
+ 	term_volt = desc->jeita_tab[jeita_status].term_volt;
+ 	target_cur = desc->jeita_tab[jeita_status].current_ua;
+ 
++	/* ported from iFlytek: record JEITA terminate voltage for the SW algo and
++	 * re-arm the OVP latch whenever the JEITA point is (re)evaluated. */
++	desc->jeita_vbat = term_volt;
++	desc->ovp_flag = false;
++
+ 	cm->desc->ir_comp.us = term_volt;
+ 	cm->desc->ir_comp.us_lower_limit = term_volt;
+ 
+@@ -6717,6 +6865,14 @@ static struct charger_desc *of_cm_parse_desc(struct device *dev)
+ 	if (desc->psy_cp_stat && !desc->cp.cp_taper_current)
+ 		desc->cp.cp_taper_current = CM_CP_DEFAULT_TAPER_CURRENT;
+ 
++	/* ported from iFlytek: SW fast charge DT configuration (stock 0x8ed8) */
++	of_property_read_u32(np, "cm-pps-with-dcdc", &desc->pps_with_dcdc);
++	of_property_read_u32(np, "cm-pps-reach-drop", &desc->pps_reach_drop);
++	if (of_find_property(np, "cm-ifly-charge-control", NULL)) {
++		desc->ifly_charge_control = true;
++		dev_err(dev, "Set ifly_charge_control\n");
++	}
++
+ 	ret = cm_init_cap_remap_table(desc, dev);
+ 	if (ret)
+ 		dev_err(dev, "%s init cap remap table fail\n", __func__);
+@@ -6771,6 +6927,10 @@ static int cm_get_bat_info(struct charger_manager *cm)
+ 	cm->desc->cur.wl_bpp_cur = info.cur.wl_bpp_cur;
+ 	cm->desc->cur.wl_epp_limit = info.cur.wl_epp_limit;
+ 	cm->desc->cur.wl_epp_cur = info.cur.wl_epp_cur;
++	/* ported from iFlytek: vendor SW current upper bound + charge term current */
++	cm->desc->cur.switch_charge_max_ibat = info.cur.switch_charge_max_ibat;
++	cm->desc->switch_charge_max_ibat = info.cur.switch_charge_max_ibat;
++	cm->desc->charge_term_current = info.charge_term_current_ua;
+ 	cm->desc->fullbatt_uV = info.fullbatt_voltage_uv;
+ 	cm->desc->fullbatt_uA = info.fullbatt_current_uA;
+ 	cm->desc->first_fullbatt_uA = info.first_fullbatt_current_uA;
+diff --git a/drivers/power/supply/sprd_battery_info.c b/drivers/power/supply/sprd_battery_info.c
+index 8992e18e4..51299eb38 100644
+--- a/drivers/power/supply/sprd_battery_info.c
++++ b/drivers/power/supply/sprd_battery_info.c
+@@ -907,6 +907,9 @@ int sprd_battery_get_battery_info(struct power_supply *psy, struct sprd_battery_
+ 				   &info->cur.wl_epp_cur);
+ 	of_property_read_u32_index(battery_np, "charge-wl-epp-current-microamp", 1,
+ 				   &info->cur.wl_epp_limit);
++	/* ported from iFlytek: idx0 is the SW switch-charge current upper bound */
++	of_property_read_u32_index(battery_np, "charge-switch-current-microamp", 0,
++				   &info->cur.switch_charge_max_ibat);
+ 
+ 	err = sprd_battery_parse_battery_ocv_capacity_table(info, battery_np, psy);
+ 	if (err) {
+@@ -1150,6 +1153,9 @@ int sprd_battery_get_battery_info_sqc(struct power_supply *psy, struct sprd_batt
+ 				   &info->cur.wl_epp_cur);
+ 	of_property_read_u32_index(battery_np, "charge-wl-epp-current-microamp", 1,
+ 				   &info->cur.wl_epp_limit);
++	/* ported from iFlytek: idx0 is the SW switch-charge current upper bound */
++	of_property_read_u32_index(battery_np, "charge-switch-current-microamp", 0,
++				   &info->cur.switch_charge_max_ibat);
+ 
+ 	err = sprd_battery_parse_battery_ocv_capacity_table(info, battery_np, psy);
+ 	if (err) {
+diff --git a/include/linux/power/charger-manager.h b/include/linux/power/charger-manager.h
+index 37e8b8114..b8af6bd35 100644
+--- a/include/linux/power/charger-manager.h
++++ b/include/linux/power/charger-manager.h
+@@ -491,6 +491,8 @@ struct cm_charge_current {
+ 	int wl_bpp_limit;
+ 	int wl_epp_cur;
+ 	int wl_epp_limit;
++	/* ported from iFlytek: vendor charge-switch-current-microamp (uA) */
++	int switch_charge_max_ibat;
+ };
+ 
+ /**
+@@ -799,6 +801,17 @@ struct charger_desc {
+ 	int adapter_max_vbus;
+ 
+ 	u32 pd_port_partner;
++
++	/* ported from iFlytek: SW fast charge algorithm lifecycle fields */
++	bool sw_charge_status;		/* mirrors last successful primary charger CALIBRATE */
++	int sw_charge_current;		/* SW charge current computed/voted by the algorithm (uA) */
++	bool ovp_flag;			/* latched flag: vbat once reached jeita_vbat */
++	int switch_charge_max_ibat;	/* vendor DT charge-switch-current-microamp, SW current upper bound (uA) */
++	int jeita_vbat;			/* JEITA table terminate voltage (uV) */
++	u32 pps_with_dcdc;		/* enable iFlytek SW fast charge + DCDC path */
++	u32 pps_reach_drop;		/* PPS reach-drop protection window (uV) */
++	bool ifly_charge_control;	/* presence-only DT flag cm-ifly-charge-control */
++	int charge_term_current;	/* battery charge termination current (uA) */
+ };
+ 
+ struct charger_manager_charge_current {
+diff --git a/include/linux/power/sprd_battery_info.h b/include/linux/power/sprd_battery_info.h
+index 3693d9258..c1f50e3cf 100644
+--- a/include/linux/power/sprd_battery_info.h
++++ b/include/linux/power/sprd_battery_info.h
+@@ -71,6 +71,8 @@ struct sprd_battery_charge_current {
+ 	int wl_bpp_limit;
+ 	int wl_epp_cur;
+ 	int wl_epp_limit;
++	/* microAmps; ported from iFlytek: DT charge-switch-current-microamp idx0 */
++	int switch_charge_max_ibat;
+ };
+ 
+ typedef struct sprd_battery_energy_density_ocv_table {
+diff --git a/include/linux/power/sprd_vote.h b/include/linux/power/sprd_vote.h
+index 5b1563bd9..050393ce9 100644
+--- a/include/linux/power/sprd_vote.h
++++ b/include/linux/power/sprd_vote.h
+@@ -37,6 +37,8 @@ enum SPRD_VOTE_TYPE_IBAT_ID {
+ 	/* The ChargerIC with linear charging cannot set Ibus, only Ibat. */
+ 	SPRD_VOTE_TYPE_IBAT_ID_INPUT_CURRENT_LIMIT,
+ 	SPRD_VOTE_TYPE_IBAT_ID_CHARGE_CONTROL_LIMIT,
++	/* ported from iFlytek: SW fast charge vote, stock vote_type_id = 5 */
++	SPRD_VOTE_TYPE_IBAT_ID_IFLYTEK,
+ 	SPRD_VOTE_TYPE_IBAT_ID_MAX,
+ };
+ 

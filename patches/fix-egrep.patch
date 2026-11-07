@@ -1,0 +1,721 @@
+diff --git a/Documentation/ABI/testing/sysfs-class-pktcdvd b/Documentation/ABI/testing/sysfs-class-pktcdvd
+index dde4f26d0..27374fb20 100644
+--- a/Documentation/ABI/testing/sysfs-class-pktcdvd
++++ b/Documentation/ABI/testing/sysfs-class-pktcdvd
+@@ -88,6 +88,6 @@ cat /sys/class/pktcdvd/device_map
+ # assuming device pktcdvd0 was created, look at stat's
+ cat /sys/class/pktcdvd/pktcdvd0/stat/kb_written
+ # print the device id of the mapped block device
+-fgrep pktcdvd0 /sys/class/pktcdvd/device_map
++grep -F pktcdvd0 /sys/class/pktcdvd/device_map
+ # remove device, using pktcdvd0 device id   253:0
+ echo "253:0" >/sys/class/pktcdvd/remove
+diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+index 1cc0bc78d..f692cf81a 100644
+--- a/Documentation/admin-guide/mm/hugetlbpage.rst
++++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+@@ -134,7 +134,7 @@ is still very high.  Administrators can verify the number of huge pages
+ actually allocated by checking the sysctl or meminfo.  To check the per node
+ distribution of huge pages in a NUMA system, use::
+ 
+-	cat /sys/devices/system/node/node*/meminfo | fgrep Huge
++	cat /sys/devices/system/node/node*/meminfo | grep -F Huge
+ 
+ ``/proc/sys/vm/nr_overcommit_hugepages`` specifies how large the pool of
+ huge pages can grow, if more huge pages than ``/proc/sys/vm/nr_hugepages`` are
+diff --git a/arch/ia64/scripts/check-gas b/arch/ia64/scripts/check-gas
+index 787cf9b6b..462a13e92 100755
+--- a/arch/ia64/scripts/check-gas
++++ b/arch/ia64/scripts/check-gas
+@@ -6,7 +6,7 @@ OBJDUMP=$2
+ tmp=${TMPDIR:-/tmp}
+ out=$tmp/out$$.o
+ $CC -c $dir/check-gas-asm.S -o $out
+-res=$($OBJDUMP -r --section .data $out | fgrep 00004 | tr -s ' ' |cut -f3 -d' ')
++res=$($OBJDUMP -r --section .data $out | grep -F 00004 | tr -s ' ' |cut -f3 -d' ')
+ rm -f $out
+ if [ $res != ".text" ]; then
+ 	echo buggy
+diff --git a/arch/ia64/scripts/toolchain-flags b/arch/ia64/scripts/toolchain-flags
+index 12dff5c98..02db0cccc 100755
+--- a/arch/ia64/scripts/toolchain-flags
++++ b/arch/ia64/scripts/toolchain-flags
+@@ -15,7 +15,7 @@ out=$tmp/out$$
+ # that for building the gate DSO:
+ 
+ $CC -nostdlib -static -Wl,-T$dir/check-segrel.lds $dir/check-segrel.S -o $out
+-res=$($OBJDUMP --full --section .rodata $out | fgrep 000 | cut -f3 -d' ')
++res=$($OBJDUMP --full --section .rodata $out | grep -F 000 | cut -f3 -d' ')
+ rm -f $out
+ if [ $res != 00000a00 ]; then
+     CPPFLAGS="$CPPFLAGS -DHAVE_BUGGY_SEGREL"
+@@ -29,7 +29,7 @@ fi
+ # Check whether .align inside a function works as expected.
+ 
+ $CC -c $dir/check-text-align.S -o $out
+-$READELF -u $out | fgrep -q 'prologue(rlen=12)'
++$READELF -u $out | grep -F -q 'prologue(rlen=12)'
+ res=$?
+ rm -f $out
+ if [ $res -eq 0 ]; then
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index a0726f972..527a485c2 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -320,7 +320,7 @@ KBUILD_LDFLAGS		+= -m $(ld-emul)
+ 
+ ifdef CONFIG_MIPS
+ CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
+-	egrep -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
++	grep -E -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
+ 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
+ endif
+ 
+diff --git a/lib/vdso/Makefile b/lib/vdso/Makefile
+index c415a685d..e814061d6 100644
+--- a/lib/vdso/Makefile
++++ b/lib/vdso/Makefile
+@@ -17,6 +17,6 @@ $(error ARCH_REL_TYPE_ABS is not set)
+ endif
+ 
+ quiet_cmd_vdso_check = VDSOCHK $@
+-      cmd_vdso_check = if $(OBJDUMP) -R $@ | egrep -h "$(ARCH_REL_TYPE_ABS)"; \
++      cmd_vdso_check = if $(OBJDUMP) -R $@ | grep -E -h "$(ARCH_REL_TYPE_ABS)"; \
+ 		       then (echo >&2 "$@: dynamic relocations are not supported"; \
+ 			     rm -f $@; /bin/false); fi
+diff --git a/samples/bpf/test_cgrp2_tc.sh b/samples/bpf/test_cgrp2_tc.sh
+index 12faf5847..395573be6 100755
+--- a/samples/bpf/test_cgrp2_tc.sh
++++ b/samples/bpf/test_cgrp2_tc.sh
+@@ -115,7 +115,7 @@ do_exit() {
+     if [ "$DEBUG" == "yes" ] && [ "$MODE" != 'cleanuponly' ]
+     then
+ 	echo "------ DEBUG ------"
+-	echo "mount: "; mount | egrep '(cgroup2|bpf)'; echo
++	echo "mount: "; mount | grep -E '(cgroup2|bpf)'; echo
+ 	echo "$CGRP2_TC_LEAF: "; ls -l $CGRP2_TC_LEAF; echo
+ 	if [ -d "$BPF_FS_TC_SHARE" ]
+ 	then
+diff --git a/samples/pktgen/functions.sh b/samples/pktgen/functions.sh
+index 40873a5d1..c3472657d 100644
+--- a/samples/pktgen/functions.sh
++++ b/samples/pktgen/functions.sh
+@@ -99,9 +99,9 @@ function pgset() {
+     echo $1 > $PGDEV
+     local status=$?
+ 
+-    result=`cat $PGDEV | fgrep "Result: OK:"`
++    result=`cat $PGDEV | grep -F "Result: OK:"`
+     if [[ "$result" == "" ]]; then
+-         cat $PGDEV | fgrep Result:
++         cat $PGDEV | grep -F Result:
+     fi
+     if (( $status != 0 )); then
+ 	err 5 "Write error($status) occurred cmd: \"$1 > $PGDEV\""
+diff --git a/scripts/coccicheck b/scripts/coccicheck
+index e04d32821..52d6e3a89 100755
+--- a/scripts/coccicheck
++++ b/scripts/coccicheck
+@@ -48,7 +48,7 @@ FLAGS="--very-quiet"
+ # inspected there.
+ #
+ # --profile will not output if --very-quiet is used, so avoid it.
+-echo $SPFLAGS | egrep -e "--profile|--show-trying" 2>&1 > /dev/null
++echo $SPFLAGS | grep -E -e "--profile|--show-trying" 2>&1 > /dev/null
+ if [ $? -eq 0 ]; then
+ 	FLAGS="--quiet"
+ fi
+diff --git a/scripts/selinux/install_policy.sh b/scripts/selinux/install_policy.sh
+index 2dccf1412..20af56ce2 100755
+--- a/scripts/selinux/install_policy.sh
++++ b/scripts/selinux/install_policy.sh
+@@ -78,7 +78,7 @@ cd /etc/selinux/dummy/contexts/files
+ $SF -F file_contexts /
+ 
+ mounts=`cat /proc/$$/mounts | \
+-	egrep "ext[234]|jfs|xfs|reiserfs|jffs2|gfs2|btrfs|f2fs|ocfs2" | \
++	grep -E "ext[234]|jfs|xfs|reiserfs|jffs2|gfs2|btrfs|f2fs|ocfs2" | \
+ 	awk '{ print $2 '}`
+ $SF -F file_contexts $mounts
+ 
+diff --git a/tools/memory-model/scripts/checkghlitmus.sh b/tools/memory-model/scripts/checkghlitmus.sh
+index 6589fbb6f..f72816a8b 100755
+--- a/tools/memory-model/scripts/checkghlitmus.sh
++++ b/tools/memory-model/scripts/checkghlitmus.sh
+@@ -35,13 +35,13 @@ fi
+ # Create a list of the C-language litmus tests previously run.
+ ( cd $LKMM_DESTDIR; find litmus -name '*.litmus.out' -print ) |
+ 	sed -e 's/\.out$//' |
+-	xargs -r egrep -l '^ \* Result: (Never|Sometimes|Always|DEADLOCK)' |
++	xargs -r grep -E -l '^ \* Result: (Never|Sometimes|Always|DEADLOCK)' |
+ 	xargs -r grep -L "^P${LKMM_PROCS}"> $T/list-C-already
+ 
+ # Create a list of C-language litmus tests with "Result:" commands and
+ # no more than the specified number of processes.
+ find litmus -name '*.litmus' -exec grep -l -m 1 "^C " {} \; > $T/list-C
+-xargs < $T/list-C -r egrep -l '^ \* Result: (Never|Sometimes|Always|DEADLOCK)' > $T/list-C-result
++xargs < $T/list-C -r grep -E -l '^ \* Result: (Never|Sometimes|Always|DEADLOCK)' > $T/list-C-result
+ xargs < $T/list-C-result -r grep -L "^P${LKMM_PROCS}" > $T/list-C-result-short
+ 
+ # Form list of tests without corresponding .litmus.out files
+diff --git a/tools/perf/Makefile b/tools/perf/Makefile
+index b8fc7d972..52d0ee05e 100644
+--- a/tools/perf/Makefile
++++ b/tools/perf/Makefile
+@@ -25,7 +25,7 @@ unexport MAKEFLAGS
+ # (To override it, run 'make JOBS=1' and similar.)
+ #
+ ifeq ($(JOBS),)
+-  JOBS := $(shell (getconf _NPROCESSORS_ONLN || egrep -c '^processor|^CPU[0-9]' /proc/cpuinfo) 2>/dev/null)
++  JOBS := $(shell (getconf _NPROCESSORS_ONLN || grep -E -c '^processor|^CPU[0-9]' /proc/cpuinfo) 2>/dev/null)
+   ifeq ($(JOBS),0)
+     JOBS := 1
+   endif
+diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+index c850d1664..91897458e 100644
+--- a/tools/perf/tests/make
++++ b/tools/perf/tests/make
+@@ -28,7 +28,7 @@ endif
+ 
+ PARALLEL_OPT=
+ ifeq ($(SET_PARALLEL),1)
+-  cores := $(shell (getconf _NPROCESSORS_ONLN || egrep -c '^processor|^CPU[0-9]' /proc/cpuinfo) 2>/dev/null)
++  cores := $(shell (getconf _NPROCESSORS_ONLN || grep -E -c '^processor|^CPU[0-9]' /proc/cpuinfo) 2>/dev/null)
+   ifeq ($(cores),0)
+     cores := 1
+   endif
+diff --git a/tools/perf/tests/shell/lib/probe_vfs_getname.sh b/tools/perf/tests/shell/lib/probe_vfs_getname.sh
+index c2cc42daf..b4e322221 100644
+--- a/tools/perf/tests/shell/lib/probe_vfs_getname.sh
++++ b/tools/perf/tests/shell/lib/probe_vfs_getname.sh
+@@ -12,13 +12,13 @@ cleanup_probe_vfs_getname() {
+ add_probe_vfs_getname() {
+ 	local verbose=$1
+ 	if [ $had_vfs_getname -eq 1 ] ; then
+-		line=$(perf probe -L getname_flags 2>&1 | egrep 'result.*=.*filename;' | sed -r 's/[[:space:]]+([[:digit:]]+)[[:space:]]+result->uptr.*/\1/')
++		line=$(perf probe -L getname_flags 2>&1 | grep -E 'result.*=.*filename;' | sed -r 's/[[:space:]]+([[:digit:]]+)[[:space:]]+result->uptr.*/\1/')
+ 		perf probe -q       "vfs_getname=getname_flags:${line} pathname=result->name:string" || \
+ 		perf probe $verbose "vfs_getname=getname_flags:${line} pathname=filename:ustring"
+ 	fi
+ }
+ 
+ skip_if_no_debuginfo() {
+-	add_probe_vfs_getname -v 2>&1 | egrep -q "^(Failed to find the path for kernel|Debuginfo-analysis is not supported)" && return 2
++	add_probe_vfs_getname -v 2>&1 | grep -E -q "^(Failed to find the path for kernel|Debuginfo-analysis is not supported)" && return 2
+ 	return 1
+ }
+diff --git a/tools/perf/tests/shell/record+probe_libc_inet_pton.sh b/tools/perf/tests/shell/record+probe_libc_inet_pton.sh
+index f12a4e217..a040eba5d 100755
+--- a/tools/perf/tests/shell/record+probe_libc_inet_pton.sh
++++ b/tools/perf/tests/shell/record+probe_libc_inet_pton.sh
+@@ -13,7 +13,7 @@
+ . $(dirname $0)/lib/probe.sh
+ 
+ libc=$(grep -w libc /proc/self/maps | head -1 | sed -r 's/.*[[:space:]](\/.*)/\1/g')
+-nm -Dg $libc 2>/dev/null | fgrep -q inet_pton || exit 254
++nm -Dg $libc 2>/dev/null | grep -F -q inet_pton || exit 254
+ 
+ event_pattern='probe_libc:inet_pton(\_[[:digit:]]+)?'
+ 
+@@ -64,7 +64,7 @@ trace_libc_inet_pton_backtrace() {
+ 	while read line <&3 && read -r pattern <&4; do
+ 		[ -z "$pattern" ] && break
+ 		echo $line
+-		echo "$line" | egrep -q "$pattern"
++		echo "$line" | grep -E -q "$pattern"
+ 		if [ $? -ne 0 ] ; then
+ 			printf "FAIL: expected backtrace entry \"%s\" got \"%s\"\n" "$pattern" "$line"
+ 			return 1
+@@ -85,7 +85,7 @@ delete_libc_inet_pton_event() {
+ }
+ 
+ # Check for IPv6 interface existence
+-ip a sh lo | fgrep -q inet6 || exit 2
++ip a sh lo | grep -F -q inet6 || exit 2
+ 
+ skip_if_no_perf_probe && \
+ add_libc_inet_pton_event && \
+diff --git a/tools/perf/tests/shell/record+script_probe_vfs_getname.sh b/tools/perf/tests/shell/record+script_probe_vfs_getname.sh
+index 54030c18b..251ef45b0 100755
+--- a/tools/perf/tests/shell/record+script_probe_vfs_getname.sh
++++ b/tools/perf/tests/shell/record+script_probe_vfs_getname.sh
+@@ -26,7 +26,7 @@ record_open_file() {
+ perf_script_filenames() {
+ 	echo "Looking at perf.data file for vfs_getname records for the file we touched:"
+ 	perf script -i ${perfdata} | \
+-	egrep " +touch +[0-9]+ +\[[0-9]+\] +[0-9]+\.[0-9]+: +probe:vfs_getname: +\([[:xdigit:]]+\) +pathname=\"${file}\""
++	grep -E " +touch +[0-9]+ +\[[0-9]+\] +[0-9]+\.[0-9]+: +probe:vfs_getname: +\([[:xdigit:]]+\) +pathname=\"${file}\""
+ }
+ 
+ add_probe_vfs_getname || skip_if_no_debuginfo
+diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+index 11cc2af13..02aeb3f68 100755
+--- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
++++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+@@ -20,9 +20,9 @@ skip_if_no_perf_trace || exit 2
+ file=$(mktemp /tmp/temporary_file.XXXXX)
+ 
+ trace_open_vfs_getname() {
+-	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
++	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | grep -E 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
+ 	perf trace -e $evts touch $file 2>&1 | \
+-	egrep " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch\/[0-9]+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) += +[0-9]+$"
++	grep -E " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch\/[0-9]+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) += +[0-9]+$"
+ }
+ 
+ 
+diff --git a/tools/perf/trace/beauty/fadvise.sh b/tools/perf/trace/beauty/fadvise.sh
+index b15ae3875..4d3dd6e56 100755
+--- a/tools/perf/trace/beauty/fadvise.sh
++++ b/tools/perf/trace/beauty/fadvise.sh
+@@ -6,7 +6,7 @@
+ printf "static const char *fadvise_advices[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+POSIX_FADV_(\w+)[[:space:]]+([[:digit:]]+)[[:space:]]+.*'
+ 
+-egrep $regex ${header_dir}/fadvise.h | \
++grep -E $regex ${header_dir}/fadvise.h | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n" | \
+ 	grep -v "[6].*DONTNEED" | grep -v "[7].*NOREUSE"
+diff --git a/tools/perf/trace/beauty/fsmount.sh b/tools/perf/trace/beauty/fsmount.sh
+index 615cc0fcf..cba8897a7 100755
+--- a/tools/perf/trace/beauty/fsmount.sh
++++ b/tools/perf/trace/beauty/fsmount.sh
+@@ -16,7 +16,7 @@ linux_mount=${linux_header_dir}/mount.h
+ 
+ printf "static const char *fsmount_attr_flags[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MOUNT_ATTR_([[:alnum:]][[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*'
+-egrep $regex ${linux_mount} | grep -v MOUNT_ATTR_RELATIME | \
++grep -E $regex ${linux_mount} | grep -v MOUNT_ATTR_RELATIME | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/fspick.sh b/tools/perf/trace/beauty/fspick.sh
+index b220e07ef..1f088329b 100755
+--- a/tools/perf/trace/beauty/fspick.sh
++++ b/tools/perf/trace/beauty/fspick.sh
+@@ -11,7 +11,7 @@ linux_mount=${linux_header_dir}/mount.h
+ 
+ printf "static const char *fspick_flags[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+FSPICK_([[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*'
+-egrep $regex ${linux_mount} | \
++grep -E $regex ${linux_mount} | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/kcmp_type.sh b/tools/perf/trace/beauty/kcmp_type.sh
+index df8b17486..5df9dcbd6 100755
+--- a/tools/perf/trace/beauty/kcmp_type.sh
++++ b/tools/perf/trace/beauty/kcmp_type.sh
+@@ -5,7 +5,7 @@
+ 
+ printf "static const char *kcmp_types[] = {\n"
+ regex='^[[:space:]]+(KCMP_(\w+)),'
+-egrep $regex ${header_dir}/kcmp.h | grep -v KCMP_TYPES, | \
++grep -E $regex ${header_dir}/kcmp.h | grep -v KCMP_TYPES, | \
+ 	sed -r "s/$regex/\1 \2/g" | \
+ 	xargs printf "\t[%s]\t= \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/kvm_ioctl.sh b/tools/perf/trace/beauty/kvm_ioctl.sh
+index 4ce54f5bf..bd0efd45f 100755
+--- a/tools/perf/trace/beauty/kvm_ioctl.sh
++++ b/tools/perf/trace/beauty/kvm_ioctl.sh
+@@ -5,8 +5,8 @@
+ 
+ printf "static const char *kvm_ioctl_cmds[] = {\n"
+ regex='^#[[:space:]]*define[[:space:]]+KVM_(\w+)[[:space:]]+_IO[RW]*\([[:space:]]*KVMIO[[:space:]]*,[[:space:]]*(0x[[:xdigit:]]+).*'
+-egrep $regex ${header_dir}/kvm.h	| \
++grep -E $regex ${header_dir}/kvm.h	| \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+-	egrep -v " ((ARM|PPC|S390)_|[GS]ET_(DEBUGREGS|PIT2|XSAVE|TSC_KHZ)|CREATE_SPAPR_TCE_64)" | \
++	grep -E -v " ((ARM|PPC|S390)_|[GS]ET_(DEBUGREGS|PIT2|XSAVE|TSC_KHZ)|CREATE_SPAPR_TCE_64)" | \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/madvise_behavior.sh b/tools/perf/trace/beauty/madvise_behavior.sh
+index 4527d290c..c659c33bf 100755
+--- a/tools/perf/trace/beauty/madvise_behavior.sh
++++ b/tools/perf/trace/beauty/madvise_behavior.sh
+@@ -5,7 +5,7 @@
+ 
+ printf "static const char *madvise_advices[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MADV_([[:alnum:]_]+)[[:space:]]+([[:digit:]]+)[[:space:]]*.*'
+-egrep $regex ${header_dir}/mman-common.h | \
++grep -E $regex ${header_dir}/mman-common.h | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort -n | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/mmap_flags.sh b/tools/perf/trace/beauty/mmap_flags.sh
+index 5f5eefcb3..64c37d397 100755
+--- a/tools/perf/trace/beauty/mmap_flags.sh
++++ b/tools/perf/trace/beauty/mmap_flags.sh
+@@ -15,26 +15,26 @@ fi
+ linux_mman=${linux_header_dir}/mman.h
+ arch_mman=${arch_header_dir}/mman.h
+ 
+-# those in egrep -vw are flags, we want just the bits
++# those in grep -E -vw are flags, we want just the bits
+ 
+ printf "static const char *mmap_flags[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MAP_([[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*'
+-egrep -q $regex ${arch_mman} && \
+-(egrep $regex ${arch_mman} | \
++grep -E -q $regex ${arch_mman} && \
++(grep -E $regex ${arch_mman} | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n")
+-egrep -q $regex ${linux_mman} && \
+-(egrep $regex ${linux_mman} | \
+-	egrep -vw 'MAP_(UNINITIALIZED|TYPE|SHARED_VALIDATE)' | \
++grep -E -q $regex ${linux_mman} && \
++(grep -E $regex ${linux_mman} | \
++	grep -E -vw 'MAP_(UNINITIALIZED|TYPE|SHARED_VALIDATE)' | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n")
+-([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+<uapi/asm-generic/mman.*' ${arch_mman}) &&
+-(egrep $regex ${header_dir}/mman-common.h | \
+-	egrep -vw 'MAP_(UNINITIALIZED|TYPE|SHARED_VALIDATE)' | \
++([ ! -f ${arch_mman} ] || grep -E -q '#[[:space:]]*include[[:space:]]+<uapi/asm-generic/mman.*' ${arch_mman}) &&
++(grep -E $regex ${header_dir}/mman-common.h | \
++	grep -E -vw 'MAP_(UNINITIALIZED|TYPE|SHARED_VALIDATE)' | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n")
+-([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+<uapi/asm-generic/mman.h>.*' ${arch_mman}) &&
+-(egrep $regex ${header_dir}/mman.h | \
++([ ! -f ${arch_mman} ] || grep -E -q '#[[:space:]]*include[[:space:]]+<uapi/asm-generic/mman.h>.*' ${arch_mman}) &&
++(grep -E $regex ${header_dir}/mman.h | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n")
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/mount_flags.sh b/tools/perf/trace/beauty/mount_flags.sh
+index 847850b2e..730099a9a 100755
+--- a/tools/perf/trace/beauty/mount_flags.sh
++++ b/tools/perf/trace/beauty/mount_flags.sh
+@@ -5,11 +5,11 @@
+ 
+ printf "static const char *mount_flags[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MS_([[:alnum:]_]+)[[:space:]]+([[:digit:]]+)[[:space:]]*.*'
+-egrep $regex ${header_dir}/mount.h | egrep -v '(MSK|VERBOSE|MGC_VAL)\>' | \
++grep -E $regex ${header_dir}/mount.h | grep -E -v '(MSK|VERBOSE|MGC_VAL)\>' | \
+ 	sed -r "s/$regex/\2 \2 \1/g" | sort -n | \
+ 	xargs printf "\t[%s ? (ilog2(%s) + 1) : 0] = \"%s\",\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MS_([[:alnum:]_]+)[[:space:]]+\(1<<([[:digit:]]+)\)[[:space:]]*.*'
+-egrep $regex ${header_dir}/mount.h | \
++grep -E $regex ${header_dir}/mount.h | \
+ 	sed -r "s/$regex/\2 \1/g" | \
+ 	xargs printf "\t[%s + 1] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/move_mount_flags.sh b/tools/perf/trace/beauty/move_mount_flags.sh
+index 55e59241d..1b995fde3 100755
+--- a/tools/perf/trace/beauty/move_mount_flags.sh
++++ b/tools/perf/trace/beauty/move_mount_flags.sh
+@@ -11,7 +11,7 @@ linux_mount=${linux_header_dir}/mount.h
+ 
+ printf "static const char *move_mount_flags[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+MOVE_MOUNT_([FT]_[[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*'
+-egrep $regex ${linux_mount} | \
++grep -E $regex ${linux_mount} | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/perf_ioctl.sh b/tools/perf/trace/beauty/perf_ioctl.sh
+index 9aabd9743..06c2774f3 100755
+--- a/tools/perf/trace/beauty/perf_ioctl.sh
++++ b/tools/perf/trace/beauty/perf_ioctl.sh
+@@ -5,7 +5,7 @@
+ 
+ printf "static const char *perf_ioctl_cmds[] = {\n"
+ regex='^#[[:space:]]*define[[:space:]]+PERF_EVENT_IOC_(\w+)[[:space:]]+_IO[RW]*[[:space:]]*\([[:space:]]*.\$.[[:space:]]*,[[:space:]]*([[:digit:]]+).*'
+-egrep $regex ${header_dir}/perf_event.h	| \
++grep -E $regex ${header_dir}/perf_event.h	| \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/pkey_alloc_access_rights.sh b/tools/perf/trace/beauty/pkey_alloc_access_rights.sh
+index f8f1b560c..74da888bc 100755
+--- a/tools/perf/trace/beauty/pkey_alloc_access_rights.sh
++++ b/tools/perf/trace/beauty/pkey_alloc_access_rights.sh
+@@ -5,7 +5,7 @@
+ 
+ printf "static const char *pkey_alloc_access_rights[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+PKEY_([[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*'
+-egrep $regex ${header_dir}/mman-common.h	| \
++grep -E $regex ${header_dir}/mman-common.h	| \
+ 	sed -r "s/$regex/\2 \2 \1/g"	| \
+ 	sort | xargs printf "\t[%s ? (ilog2(%s) + 1) : 0] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/prctl_option.sh b/tools/perf/trace/beauty/prctl_option.sh
+index 3109d7b05..0e0f91224 100755
+--- a/tools/perf/trace/beauty/prctl_option.sh
++++ b/tools/perf/trace/beauty/prctl_option.sh
+@@ -5,14 +5,14 @@
+ 
+ printf "static const char *prctl_options[] = {\n"
+ regex='^#define[[:space:]]+PR_(\w+)[[:space:]]*([[:xdigit:]]+).*'
+-egrep $regex ${header_dir}/prctl.h | grep -v PR_SET_PTRACER | \
++grep -E $regex ${header_dir}/prctl.h | grep -v PR_SET_PTRACER | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort -n | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+ 
+ printf "static const char *prctl_set_mm_options[] = {\n"
+ regex='^#[[:space:]]+define[[:space:]]+PR_SET_MM_(\w+)[[:space:]]*([[:digit:]]+).*'
+-egrep $regex ${header_dir}/prctl.h | \
++grep -E $regex ${header_dir}/prctl.h | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort -n | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/rename_flags.sh b/tools/perf/trace/beauty/rename_flags.sh
+index 54c87c782..94bf7f45d 100755
+--- a/tools/perf/trace/beauty/rename_flags.sh
++++ b/tools/perf/trace/beauty/rename_flags.sh
+@@ -8,8 +8,8 @@ fs_header=${header_dir}/fs.h
+ 
+ printf "static const char *rename_flags[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+RENAME_([[:alnum:]_]+)[[:space:]]+\(1[[:space:]]*<<[[:space:]]*([[:xdigit:]]+)[[:space:]]*\)[[:space:]]*.*'
+-egrep -q $regex ${fs_header} && \
+-(egrep $regex ${fs_header} | \
++grep -E -q $regex ${fs_header} && \
++(grep -E $regex ${fs_header} | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[%d + 1] = \"%s\",\n")
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/socket_ipproto.sh b/tools/perf/trace/beauty/socket_ipproto.sh
+index de0f2f290..6d2b67c4d 100755
+--- a/tools/perf/trace/beauty/socket_ipproto.sh
++++ b/tools/perf/trace/beauty/socket_ipproto.sh
+@@ -6,7 +6,7 @@
+ printf "static const char *socket_ipproto[] = {\n"
+ regex='^[[:space:]]+IPPROTO_(\w+)[[:space:]]+=[[:space:]]+([[:digit:]]+),.*'
+ 
+-egrep $regex ${header_dir}/in.h | \
++grep -E $regex ${header_dir}/in.h | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/sync_file_range.sh b/tools/perf/trace/beauty/sync_file_range.sh
+index 7a9282d04..90bf633be 100755
+--- a/tools/perf/trace/beauty/sync_file_range.sh
++++ b/tools/perf/trace/beauty/sync_file_range.sh
+@@ -11,7 +11,7 @@ linux_fs=${linux_header_dir}/fs.h
+ 
+ printf "static const char *sync_file_range_flags[] = {\n"
+ regex='^[[:space:]]*#[[:space:]]*define[[:space:]]+SYNC_FILE_RANGE_([[:alnum:]_]+)[[:space:]]+([[:xdigit:]]+)[[:space:]]*.*'
+-egrep $regex ${linux_fs} | \
++grep -E $regex ${linux_fs} | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/usbdevfs_ioctl.sh b/tools/perf/trace/beauty/usbdevfs_ioctl.sh
+index aa597ae53..b39cfb372 100755
+--- a/tools/perf/trace/beauty/usbdevfs_ioctl.sh
++++ b/tools/perf/trace/beauty/usbdevfs_ioctl.sh
+@@ -8,14 +8,14 @@
+ 
+ printf "static const char *usbdevfs_ioctl_cmds[] = {\n"
+ regex="^#[[:space:]]*define[[:space:]]+USBDEVFS_(\w+)(\(\w+\))?[[:space:]]+_IO[CWR]{0,2}\([[:space:]]*(_IOC_\w+,[[:space:]]*)?'U'[[:space:]]*,[[:space:]]*([[:digit:]]+).*"
+-egrep "$regex" ${header_dir}/usbdevice_fs.h | egrep -v 'USBDEVFS_\w+32[[:space:]]' | \
++grep -E "$regex" ${header_dir}/usbdevice_fs.h | grep -E -v 'USBDEVFS_\w+32[[:space:]]' | \
+ 	sed -r "s/$regex/\4 \1/g"	| \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n\n"
+ printf "#if 0\n"
+ printf "static const char *usbdevfs_ioctl_32_cmds[] = {\n"
+ regex="^#[[:space:]]*define[[:space:]]+USBDEVFS_(\w+)[[:space:]]+_IO[WR]{0,2}\([[:space:]]*'U'[[:space:]]*,[[:space:]]*([[:digit:]]+).*"
+-egrep $regex ${header_dir}/usbdevice_fs.h | egrep 'USBDEVFS_\w+32[[:space:]]' | \
++grep -E $regex ${header_dir}/usbdevice_fs.h | grep -E 'USBDEVFS_\w+32[[:space:]]' | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/vhost_virtio_ioctl.sh b/tools/perf/trace/beauty/vhost_virtio_ioctl.sh
+index 439773daa..2dd0a3b1f 100755
+--- a/tools/perf/trace/beauty/vhost_virtio_ioctl.sh
++++ b/tools/perf/trace/beauty/vhost_virtio_ioctl.sh
+@@ -5,14 +5,14 @@
+ 
+ printf "static const char *vhost_virtio_ioctl_cmds[] = {\n"
+ regex='^#[[:space:]]*define[[:space:]]+VHOST_(\w+)[[:space:]]+_IOW?\([[:space:]]*VHOST_VIRTIO[[:space:]]*,[[:space:]]*(0x[[:xdigit:]]+).*'
+-egrep $regex ${header_dir}/vhost.h | \
++grep -E $regex ${header_dir}/vhost.h | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+ 
+ printf "static const char *vhost_virtio_ioctl_read_cmds[] = {\n"
+ regex='^#[[:space:]]*define[[:space:]]+VHOST_(\w+)[[:space:]]+_IOW?R\([[:space:]]*VHOST_VIRTIO[[:space:]]*,[[:space:]]*(0x[[:xdigit:]]+).*'
+-egrep $regex ${header_dir}/vhost.h | \
++grep -E $regex ${header_dir}/vhost.h | \
+ 	sed -r "s/$regex/\2 \1/g"	| \
+ 	sort | xargs printf "\t[%s] = \"%s\",\n"
+ printf "};\n"
+diff --git a/tools/perf/trace/beauty/x86_arch_prctl.sh b/tools/perf/trace/beauty/x86_arch_prctl.sh
+index 7372d3cab..57fa6aaff 100755
+--- a/tools/perf/trace/beauty/x86_arch_prctl.sh
++++ b/tools/perf/trace/beauty/x86_arch_prctl.sh
+@@ -15,8 +15,8 @@ print_range () {
+ 	printf "static const char *x86_arch_prctl_codes_%d[] = {\n" $idx
+ 	regex=`printf '^[[:space:]]*#[[:space:]]*define[[:space:]]+ARCH_([[:alnum:]_]+)[[:space:]]+(%s[[:xdigit:]]+).*' ${prefix}`
+ 	fmt="\t[%#x - ${first_entry}]= \"%s\",\n"
+-	egrep -q $regex ${prctl_arch_header} && \
+-	(egrep $regex ${prctl_arch_header} | \
++	grep -E -q $regex ${prctl_arch_header} && \
++	(grep -E $regex ${prctl_arch_header} | \
+ 		sed -r "s/$regex/\2 \1/g"	| \
+ 		xargs printf "$fmt")
+ 	printf "};\n\n"
+diff --git a/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc b/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
+index cbd174334..a5b5f693b 100644
+--- a/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
++++ b/tools/testing/selftests/ftrace/test.d/preemptirq/irqsoff_tracer.tc
+@@ -41,10 +41,10 @@ cat trace
+ grep -q "tracer: preemptoff" trace || fail
+ 
+ # Check the end of the section
+-egrep -q "5.....us : <stack trace>" trace || fail
++grep -E -q "5.....us : <stack trace>" trace || fail
+ 
+ # Check for 500ms of latency
+-egrep -q "latency: 5..... us" trace || fail
++grep -E -q "latency: 5..... us" trace || fail
+ 
+ reset_tracer
+ 
+@@ -64,10 +64,10 @@ cat trace
+ grep -q "tracer: irqsoff" trace || fail
+ 
+ # Check the end of the section
+-egrep -q "5.....us : <stack trace>" trace || fail
++grep -E -q "5.....us : <stack trace>" trace || fail
+ 
+ # Check for 500ms of latency
+-egrep -q "latency: 5..... us" trace || fail
++grep -E -q "latency: 5..... us" trace || fail
+ 
+ reset_tracer
+ exit 0
+diff --git a/tools/testing/selftests/powerpc/scripts/hmi.sh b/tools/testing/selftests/powerpc/scripts/hmi.sh
+index dcdb392e8..bcc7b6b65 100755
+--- a/tools/testing/selftests/powerpc/scripts/hmi.sh
++++ b/tools/testing/selftests/powerpc/scripts/hmi.sh
+@@ -36,7 +36,7 @@ trap "ppc64_cpu --smt-snooze-delay=100" 0 1
+ 
+ # for each chip+core combination
+ # todo - less fragile parsing
+-egrep -o 'OCC: Chip [0-9a-f]+ Core [0-9a-f]' < /sys/firmware/opal/msglog |
++grep -E -o 'OCC: Chip [0-9a-f]+ Core [0-9a-f]' < /sys/firmware/opal/msglog |
+ while read chipcore; do
+ 	chip=$(echo "$chipcore"|awk '{print $3}')
+ 	core=$(echo "$chipcore"|awk '{print $5}')
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+index 18d651850..1ca5d4964 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
+@@ -37,10 +37,10 @@ fi
+ ncpus=`cpus2use.sh`
+ make -j$ncpus $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
+ retval=$?
+-if test $retval -ne 0 || grep "rcu[^/]*": < $resdir/Make.out | egrep -q "Stop|Error|error:|warning:" || egrep -q "Stop|Error|error:" < $resdir/Make.out
++if test $retval -ne 0 || grep "rcu[^/]*": < $resdir/Make.out | grep -E -q "Stop|Error|error:|warning:" || grep -E -q "Stop|Error|error:" < $resdir/Make.out
+ then
+ 	echo Kernel build error
+-	egrep "Stop|Error|error:|warning:" < $resdir/Make.out
++	grep -E "Stop|Error|error:|warning:" < $resdir/Make.out
+ 	echo Run aborted.
+ 	exit 3
+ fi
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
+index 1871d00bc..c6363d343 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
+@@ -28,9 +28,9 @@ editor=${EDITOR-vi}
+ files=
+ for i in ${rundir}/*/Make.out
+ do
+-	if egrep -q "error:|warning:" < $i
++	if grep -E -q "error:|warning:" < $i
+ 	then
+-		egrep "error:|warning:" < $i > $i.diags
++		grep -E "error:|warning:" < $i > $i.diags
+ 		files="$files $i.diags $i"
+ 	fi
+ done
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 72518580d..a31cd5deb 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -462,7 +462,7 @@ then
+ elif test "$dryrun" = sched
+ then
+ 	# Extract the test run schedule from the script.
+-	egrep 'Start batch|Starting build\.' $T/script |
++	grep -E 'Start batch|Starting build\.' $T/script |
+ 		grep -v ">>" |
+ 		sed -e 's/:.*$//' -e 's/^echo //'
+ 	exit 0
+diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+index 4bf62d7b1..6f8ac5a93 100755
+--- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
++++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+@@ -53,7 +53,7 @@ then
+ 	fi
+ 
+ 	grep --binary-files=text 'torture:.*ver:' $file |
+-	egrep --binary-files=text -v '\(null\)|rtc: 000000000* ' |
++	grep -E --binary-files=text -v '\(null\)|rtc: 000000000* ' |
+ 	sed -e 's/^(initramfs)[^]]*] //' -e 's/^\[[^]]*] //' |
+ 	awk '
+ 	BEGIN	{
+@@ -104,7 +104,7 @@ then
+ 	fi
+ fi | tee -a $file.diags
+ 
+-egrep 'Badness|WARNING:|Warn|BUG|===========|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for' < $file |
++grep -E 'Badness|WARNING:|Warn|BUG|===========|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for' < $file |
+ grep -v 'ODEBUG: ' |
+ grep -v 'This means that this is a DEBUG kernel and it is' |
+ grep -v 'Warning: unable to open an initial console' > $T.diags
+@@ -118,12 +118,12 @@ then
+ 	then
+ 		summary="$summary  Badness: $n_badness"
+ 	fi
+-	n_warn=`grep -v 'Warning: unable to open an initial console' $file | egrep -c 'WARNING:|Warn'`
++	n_warn=`grep -v 'Warning: unable to open an initial console' $file | grep -E -c 'WARNING:|Warn'`
+ 	if test "$n_warn" -ne 0
+ 	then
+ 		summary="$summary  Warnings: $n_warn"
+ 	fi
+-	n_bugs=`egrep -c 'BUG|Oops:' $file`
++	n_bugs=`grep -E -c 'BUG|Oops:' $file`
+ 	if test "$n_bugs" -ne 0
+ 	then
+ 		summary="$summary  Bugs: $n_bugs"
+@@ -138,7 +138,7 @@ then
+ 	then
+ 		summary="$summary  lockdep: $n_badness"
+ 	fi
+-	n_stalls=`egrep -c 'detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state' $file`
++	n_stalls=`grep -E -c 'detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state' $file`
+ 	if test "$n_stalls" -ne 0
+ 	then
+ 		summary="$summary  Stalls: $n_stalls"
+diff --git a/tools/vm/slabinfo-gnuplot.sh b/tools/vm/slabinfo-gnuplot.sh
+index 26e193ffd..873a89214 100644
+--- a/tools/vm/slabinfo-gnuplot.sh
++++ b/tools/vm/slabinfo-gnuplot.sh
+@@ -150,7 +150,7 @@ do_preprocess()
+ 	let lines=3
+ 	out=`basename "$in"`"-slabs-by-loss"
+ 	`cat "$in" | grep -A "$lines" 'Slabs sorted by loss' |\
+-		egrep -iv '\-\-|Name|Slabs'\
++		grep -E -iv '\-\-|Name|Slabs'\
+ 		| awk '{print $1" "$4+$2*$3" "$4}' > "$out"`
+ 	if [ $? -eq 0 ]; then
+ 		do_slabs_plotting "$out"
+@@ -159,7 +159,7 @@ do_preprocess()
+ 	let lines=3
+ 	out=`basename "$in"`"-slabs-by-size"
+ 	`cat "$in" | grep -A "$lines" 'Slabs sorted by size' |\
+-		egrep -iv '\-\-|Name|Slabs'\
++		grep -E -iv '\-\-|Name|Slabs'\
+ 		| awk '{print $1" "$4" "$4-$2*$3}' > "$out"`
+ 	if [ $? -eq 0 ]; then
+ 		do_slabs_plotting "$out"

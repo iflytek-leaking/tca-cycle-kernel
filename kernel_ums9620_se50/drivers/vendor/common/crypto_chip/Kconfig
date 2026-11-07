@@ -1,0 +1,23 @@
+config VENDOR_CRYPTO_CHIP
+	bool "VENDOR_CRYPTO_CHIP"
+		depends on I2C
+		default n
+		help
+		  Say Y here if you have vendor crypto chip.
+		  If unsure, say N.
+
+config VENDOR_CRYPTO_ATSHA204A
+	bool "VENDOR_CRYPTO_ATSHA204A"
+		depends on I2C
+		default n
+		help
+		  Say Y here if you have crypto atsha204a chip.
+		  If unsure, say N.
+
+config VENDOR_CRYPTO_VEB_A5
+	tristate "VENDOR_CRYPTO_VEB_A5"
+		depends on SPI
+		default n
+		help
+		  Say Y here to build support for crypto veb a5 new.
+		  To compile this driver as a module, choose M here.

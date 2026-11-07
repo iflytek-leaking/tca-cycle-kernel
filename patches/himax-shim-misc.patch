@@ -1,0 +1,27 @@
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 7f03f622e..2aab4cd93 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -64,3 +64,8 @@ obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
+ obj-$(CONFIG_SPRD_SOCID)	+= sprd_soc_id.o
+ obj-$(CONFIG_LEDS_SC27XX_VIBRA)	+= vibrator/
+ 
++# Himax touch notify symbols required by the stock sprd-drm.ko (vmlinux shim).
++# Kept out of drivers/vendor/common/ because that tree is gated behind
++# CONFIG_VENDOR_COMMON_COMPILE, which is disabled in this build.
++obj-y				+= himax_lcd_notify.o
++
+diff --git a/drivers/vendor/common/Makefile b/drivers/vendor/common/Makefile
+index 10b0a6c61..81f176a7b 100644
+--- a/drivers/vendor/common/Makefile
++++ b/drivers/vendor/common/Makefile
+@@ -30,9 +30,6 @@ obj-y   += zcard_det/
+ #lcd
+ obj-$(CONFIG_VENDOR_LCDBL_I2C_CTRL_VSP_VSN) += vendor_lcdbl/
+ 
+-# Himax touch notify symbols required by the stock sprd-drm.ko (built-in shim)
+-obj-y	+= himax_lcd_notify.o
+-
+ ##### Fingerprint #####
+ obj-$(CONFIG_VENDOR_PLATFORM_FINGERPRINT)    += fingerprint/
+ 

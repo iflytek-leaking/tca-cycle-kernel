@@ -1,0 +1,178 @@
+diff --git a/arch/arm64/configs/f50_defconfig b/arch/arm64/configs/f50_defconfig
+index 9a1c6855f..e1723d641 100755
+--- a/arch/arm64/configs/f50_defconfig
++++ b/arch/arm64/configs/f50_defconfig
+@@ -6303,7 +6303,7 @@ CONFIG_FRAME_WARN=4096
+ # CONFIG_STRIP_ASM_SYMS is not set
+ # CONFIG_READABLE_ASM is not set
+ CONFIG_DEBUG_FS=y
+-CONFIG_HEADERS_INSTALL=y
++# CONFIG_HEADERS_INSTALL is not set
+ CONFIG_OPTIMIZE_INLINING=y
+ # CONFIG_DEBUG_SECTION_MISMATCH is not set
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -6544,3 +6544,17 @@ CONFIG_SPRD_SHARKL6PRO_CORESIGHT_PHY=y
+ # end of Coresight Physical Layer drivers
+ # end of Kernel hacking
+ CONFIG_TCA_CYCLE_MODULE_SKIP_VERMAGIC_VERSION=y
++
++# ReSukiSU (v4.2.0-rc3 line; KSU_VERSION computed from git commit count)
++CONFIG_KSU=y
++# CONFIG_KSU_TRACEPOINT_HOOK is not set
++CONFIG_KSU_MANUAL_HOOK=y
++CONFIG_KSU_MULTI_MANAGER_SUPPORT=y
++CONFIG_KSU_MANUAL_HOOK_AUTO_SETUID_HOOK=y
++CONFIG_KSU_MANUAL_HOOK_AUTO_INITRC_HOOK=y
++CONFIG_KSU_MANUAL_HOOK_AUTO_INPUT_HOOK=y
++# CONFIG_KSU_DEBUG is not set
++# CONFIG_KSU_DISABLE_MANAGER is not set
++# CONFIG_KSU_DISABLE_POLICY is not set
++# CONFIG_KSU_SUSFS is not set
++# CONFIG_KSU_TOOLKIT_SUPPORT is not set
+diff --git a/fs/exec.c b/fs/exec.c
+index 35efb18e1..96925375b 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1913,12 +1913,32 @@ out_ret:
+ 	return retval;
+ }
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK
++__attribute__((hot))
++extern int ksu_handle_execveat(int *fd, struct filename **filename_ptr,
++				void *argv, void *envp, int *flags);
++__attribute__((hot))
++extern int ksu_handle_post_execveat(int *fd, struct filename **filename_ptr,
++				void *argv, void *envp, int *flags, int *retval);
++#endif
++
+ static int do_execveat_common(int fd, struct filename *filename,
+ 			      struct user_arg_ptr argv,
+ 			      struct user_arg_ptr envp,
+ 			      int flags)
+ {
++#ifdef CONFIG_KSU_MANUAL_HOOK
++	int retval;
++	ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
++
++	retval = __do_execve_file(fd, filename, argv, envp, flags, NULL);
++
++	ksu_handle_post_execveat(&fd, &filename, &argv, &envp, &flags, &retval);
++
++	return retval;
++#else
+ 	return __do_execve_file(fd, filename, argv, envp, flags, NULL);
++#endif
+ }
+ 
+ int do_execve_file(struct file *file, void *__argv, void *__envp)
+diff --git a/fs/open.c b/fs/open.c
+index 437decd76..e4d9fd630 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -440,8 +440,17 @@ out:
+ 	return res;
+ }
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK
++__attribute__((hot))
++extern int ksu_handle_faccessat(int *dfd, const char __user **filename_user,
++				int *mode, int *flags);
++#endif
++
+ SYSCALL_DEFINE3(faccessat, int, dfd, const char __user *, filename, int, mode)
+ {
++#ifdef CONFIG_KSU_MANUAL_HOOK
++	ksu_handle_faccessat(&dfd, &filename, &mode, NULL);
++#endif
+ 	return do_faccessat(dfd, filename, mode);
+ }
+ 
+diff --git a/fs/stat.c b/fs/stat.c
+index 268c9eb89..4a0626e36 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -357,6 +357,17 @@ SYSCALL_DEFINE2(newlstat, const char __user *, filename,
+ 	return cp_new_stat(&stat, statbuf);
+ }
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK
++__attribute__((hot))
++extern int ksu_handle_stat(int *dfd, const char __user **filename_user,
++				int *flags);
++
++extern void ksu_handle_newfstat_ret(unsigned int *fd, struct stat __user **statbuf_ptr);
++#if defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_COMPAT_STAT64)
++extern void ksu_handle_fstat64_ret(unsigned long *fd, struct stat64 __user **statbuf_ptr); // optional
++#endif
++#endif
++
+ #if !defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_SYS_NEWFSTATAT)
+ SYSCALL_DEFINE4(newfstatat, int, dfd, const char __user *, filename,
+ 		struct stat __user *, statbuf, int, flag)
+@@ -364,6 +375,9 @@ SYSCALL_DEFINE4(newfstatat, int, dfd, const char __user *, filename,
+ 	struct kstat stat;
+ 	int error;
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK
++	ksu_handle_stat(&dfd, &filename, &flag);
++#endif
+ 	error = vfs_fstatat(dfd, filename, &stat, flag);
+ 	if (error)
+ 		return error;
+@@ -379,6 +393,9 @@ SYSCALL_DEFINE2(newfstat, unsigned int, fd, struct stat __user *, statbuf)
+ 	if (!error)
+ 		error = cp_new_stat(&stat, statbuf);
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK
++	ksu_handle_newfstat_ret(&fd, &statbuf);
++#endif
+ 	return error;
+ }
+ #endif
+@@ -506,6 +523,9 @@ SYSCALL_DEFINE2(fstat64, unsigned long, fd, struct stat64 __user *, statbuf)
+ 	if (!error)
+ 		error = cp_new_stat64(&stat, statbuf);
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK // for 32-bit
++	ksu_handle_fstat64_ret(&fd, &statbuf);
++#endif
+ 	return error;
+ }
+ 
+@@ -515,6 +535,9 @@ SYSCALL_DEFINE4(fstatat64, int, dfd, const char __user *, filename,
+ 	struct kstat stat;
+ 	int error;
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK // 32-bit su
++	ksu_handle_stat(&dfd, &filename, &flag);
++#endif
+ 	error = vfs_fstatat(dfd, filename, &stat, flag);
+ 	if (error)
+ 		return error;
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 9c1fee6a3..38a07cd28 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -309,6 +309,10 @@ DEFINE_MUTEX(system_transition_mutex);
+  *
+  * reboot doesn't sync: do that yourself before calling this.
+  */
++#ifdef CONFIG_KSU_MANUAL_HOOK
++extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user **arg);
++#endif
++
+ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
+ 		void __user *, arg)
+ {
+@@ -316,6 +320,10 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
+ 	char buffer[256];
+ 	int ret = 0;
+ 
++#ifdef CONFIG_KSU_MANUAL_HOOK
++	ksu_handle_sys_reboot(magic1, magic2, cmd, &arg);
++#endif
++
+ 	/* We only trust the superuser with rebooting the system. */
+ 	if (!ns_capable(pid_ns->user_ns, CAP_SYS_BOOT))
+ 		return -EPERM;

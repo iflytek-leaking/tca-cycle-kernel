@@ -1,0 +1,6 @@
+id=tca-cycle-tuner
+name=TCA Cycle Tuner
+version=0.5.2
+versionCode=8
+author=Enceka
+description=0.5.2 安全版本：撤回内存收容/限额和 GC 预设/即时写入/软重启，保留诊断及旧 GC 配置回滚（需完整重启）。保留调度/触摸/音频/充电/网络/IO WebUI。

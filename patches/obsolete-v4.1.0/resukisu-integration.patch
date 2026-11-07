@@ -1,0 +1,40 @@
+diff --git a/arch/arm64/configs/f50_defconfig b/arch/arm64/configs/f50_defconfig
+index 9a1c6855f..a316bb42a 100755
+--- a/arch/arm64/configs/f50_defconfig
++++ b/arch/arm64/configs/f50_defconfig
+@@ -6303,7 +6303,7 @@ CONFIG_FRAME_WARN=4096
+ # CONFIG_STRIP_ASM_SYMS is not set
+ # CONFIG_READABLE_ASM is not set
+ CONFIG_DEBUG_FS=y
+-CONFIG_HEADERS_INSTALL=y
++# CONFIG_HEADERS_INSTALL is not set
+ CONFIG_OPTIMIZE_INLINING=y
+ # CONFIG_DEBUG_SECTION_MISMATCH is not set
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -6544,3 +6544,7 @@ CONFIG_SPRD_SHARKL6PRO_CORESIGHT_PHY=y
+ # end of Coresight Physical Layer drivers
+ # end of Kernel hacking
+ CONFIG_TCA_CYCLE_MODULE_SKIP_VERMAGIC_VERSION=y
++
++# ReSukiSU
++CONFIG_KSU=y
++CONFIG_KSU_MANUAL_SU=y
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index 4c39cacfc..70297dd4c 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -238,4 +238,5 @@ source "drivers/vendor/common/Kconfig"
+ source "drivers/vendor/soc/sprd/Kconfig"
+ source "drivers/nfc/Kconfig"
+ source "drivers/nfc/pn553/Kconfig"
++source "drivers/kernelsu/Kconfig"
+ endmenu
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 239371138..2c6580dbe 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -190,3 +190,4 @@ obj-$(CONFIG_TRUSTY)		+= trusty/
+ obj-$(CONFIG_ARCH_SPRD)         += unisoc_platform/
+ obj-$(CONFIG_VENDOR_COMMON_COMPILE)	+= vendor/common/
+ obj-$(CONFIG_VENDOR_SOC_SPRD_COMPILE)	+= vendor/soc/sprd/
++obj-$(CONFIG_KSU) += kernelsu/

@@ -1,0 +1,30 @@
+VENDOR sysctrl Registers
+
+Registers for 'vendor,zx296702' SoC:
+
+System management required properties:
+      - compatible = "vendor,sysctrl"
+
+Low power management required properties:
+      - compatible = "vendor,zx296702-pcu"
+
+Bus matrix required properties:
+      - compatible = "vendor,zx-bus-matrix"
+
+
+Registers for 'vendor,zx296718' SoC:
+
+System management required properties:
+      - compatible = "vendor,zx296718-aon-sysctrl"
+      - compatible = "vendor,zx296718-sysctrl"
+
+Example:
+aon_sysctrl: aon-sysctrl@116000 {
+	compatible = "vendor,zx296718-aon-sysctrl", "syscon";
+	reg = <0x116000 0x1000>;
+};
+
+sysctrl: sysctrl@1463000 {
+	compatible = "vendor,zx296718-sysctrl", "syscon";
+	reg = <0x1463000 0x1000>;
+};

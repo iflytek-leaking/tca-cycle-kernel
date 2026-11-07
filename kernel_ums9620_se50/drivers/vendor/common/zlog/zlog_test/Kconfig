@@ -1,0 +1,10 @@
+
+config VENDOR_LOG_E_TEST
+	tristate "VENDOR LOG EXCEPTION TEST"
+	depends on VENDOR_LOG_EXCEPTION
+	depends on VENDOR_LOG_COMMON
+	default n
+	help
+	  Say Y here, if supported vendor log exception
+
+

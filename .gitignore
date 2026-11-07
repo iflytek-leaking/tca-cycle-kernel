@@ -1,0 +1,55 @@
+# ============================================================
+#  tca cycle kernel — .gitignore
+#  原则：源码 / 补丁 / 报告 / 配置 进仓库；
+#        构建产物、原厂大体积二进制、外部参考仓库 不进。
+# ============================================================
+
+# ---- 构建输出（约 5.5 GB）----
+/build/
+/se50-clang-out
+/out/
+/logs/
+*.log
+
+# ---- 原厂资料与大体积二进制（可从固件重新提取）----
+/stock/
+/s5-ship/
+/artifacts/
+/patches.zip
+/.backup/
+
+# ---- 外部参考仓库（各自有远程，另行 clone）----
+/tools/t508n_kernel/
+
+# ---- AnyKernel3 中由构建生成的 kernel（产物，非源码）----
+/anykernel3/Image
+
+# ---- himax shim 的历史编译产物（源码 .c 保留）----
+/tools/himax_shim/*.o
+/tools/himax_shim/*.ko
+/tools/himax_shim/*.mod
+/tools/himax_shim/*.mod.c
+/tools/himax_shim/.*.cmd
+/tools/himax_shim/Module.symvers
+/tools/himax_shim/modules.order
+
+# ---- 内核树内的构建残留（本工程为 O= 外部构建，这里是防御性规则）----
+kernel_ums9620_se50/.config
+kernel_ums9620_se50/.config.old
+kernel_ums9620_se50/include/config/
+kernel_ums9620_se50/include/generated/
+kernel_ums9620_se50/Module.symvers
+kernel_ums9620_se50/modules.order
+kernel_ums9620_se50/**/*.o
+kernel_ums9620_se50/**/*.ko
+kernel_ums9620_se50/**/.*.cmd
+
+# KSU bugreport 抓包（大文件，不入库）
+/KernelSU_bugreport_*.tar.gz
+
+# ---- 公开仓库额外忽略 ----
+/tools/re-ghidra/
+/kernel
+/ramdisk.cpio
+__pycache__/
+*.pyc

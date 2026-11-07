@@ -1,0 +1,10 @@
+[   24.124518]c7 [  T483] cm4 watchdog on/off: len = 12, nwrite = 12
+[   24.320116]c5 [  T370] type=1400 audit(1790423236.275:715): avc: denied { write } for comm="atrace" name="enable" dev="tracefs" ino=7681 scontext=u:r:atrace:s0 tcontext=u:object_r:debugfs_tracing_debug:s0 tclass=file permissive=1
+[   25.298349]c5 [  T370] type=1400 audit(1790423237.235:954): avc: denied { open } for comm="getprop" path="/dev/__properties__/u:object_r:framework_watchdog_config_prop:s0" dev="tmpfs" ino=21434 scontext=u:r:untrusted_app:s0 tcontext=u:object_r:framework_watchdog_config_prop:s0 tclass=file permissive=1
+[   25.298366]c5 [  T370] type=1400 audit(1790423237.235:955): avc: denied { getattr } for comm="getprop" path="/dev/__properties__/u:object_r:framework_watchdog_config_prop:s0" dev="tmpfs" ino=21434 scontext=u:r:untrusted_app:s0 tcontext=u:object_r:framework_watchdog_config_prop:s0 tclass=file permissive=1
+[   25.298383]c5 [  T370] type=1400 audit(1790423237.235:956): avc: denied { map } for comm="getprop" path="/dev/__properties__/u:object_r:framework_watchdog_config_prop:s0" dev="tmpfs" ino=21434 scontext=u:r:untrusted_app:s0 tcontext=u:object_r:framework_watchdog_config_prop:s0 tclass=file permissive=1
+[   26.286219]c7 [  T712] trusty: <   26.286105> microarray: 120: warning warning warning warning warning warning warning microarray: 189: wait_any returned (-1)
+[   52.039532]c2 [ T1503] capability: warning: `wpa_supplicant' uses 32-bit capabilities (legacy support in use)
+[   52.129486]c1 [ T1503] (NULL net_device): iface_set_mac_addr Warning: use random MAC address
+[   61.518532]c7 [    T1] init: [libfs_mgr]Warning: unknown flag: zram_loopback_path=/data/per_boot/zram_swap
+[   61.518656]c7 [    T1] init: [libfs_mgr]Warning: unknown flag: zram_backing_dev_path=/dev/block/loop0

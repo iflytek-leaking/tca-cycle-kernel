@@ -1,0 +1,12 @@
+# build outputs of the external module build
+src/*.o
+src/.*.cmd
+src/.*.o.d
+src/*.ko
+src/*.mod
+src/*.mod.c
+src/*.lto.o
+src/.tmp_versions/
+src/Module.symvers
+src/modules.order
+src/modules.builtin*

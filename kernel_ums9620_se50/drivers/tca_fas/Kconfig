@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-2.0
+config TCA_FAS
+	bool "TCA kernel-side Frame Aware Scheduling (FAS)"
+	depends on TRACEPOINTS && CPU_FREQ
+	default n
+	help
+	  In-kernel Frame Aware Scheduling.  Hooks the in-tree
+	  drm_vblank_event tracepoint, keeps an EMA of the vblank
+	  interval and drives a FREQ_QOS_MIN request per CPU cluster
+	  so the frame budget (1e9 / target_fps) is met.  This is the
+	  same idea as the userspace fas-rs, but it needs no eBPF ring
+	  buffer / BTF, so it works on 5.4.
+
+	  Default off.  Knobs at /sys/kernel/tca_fas/.

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>TCA Cycle Tuner</title>
+<link rel="stylesheet" href="style.css">
+<script>(function(){try{var t=localStorage.getItem('tca-theme');if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);var d=JSON.parse(localStorage.getItem('tca-dyn')||'null');if(d&&d.on){var m=(t==='light')?d.light:d.dark;if(m){var s=document.documentElement.style;for(var k in m){if(m[k])s.setProperty(k,m[k]);}}}}catch(e){}})();</script>
+</head>
+<body>
+
+<div class="progress" id="progress" aria-hidden="true"><div class="progress-bar"></div></div>
+
+<header class="top-app-bar">
+  <div class="tab-titles">
+    <button class="tab-title active" data-label="home" type="button">
+      <span class="mark">TCA</span>
+      <span class="tt">TCA Cycle Tuner</span>
+    </button>
+    <span class="kernel" id="kinfo">检测中…</span>
+  </div>
+  <div class="bar-actions">
+    <button class="icon-button md-ripple" id="btn-theme" type="button" title="主题">
+      <svg viewBox="0 0 24 24"><path id="theme-icon" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+    </button>
+    <button class="icon-button md-ripple" id="btn-refresh" type="button" title="刷新">
+      <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div id="banner" class="banner hidden"></div>
+
+<nav class="tabs" id="tabs" role="tablist">
+  <button class="tab md-ripple active" data-tab="home" type="button">首页</button>
+  <button class="tab md-ripple" data-tab="sched" type="button">调度</button>
+  <button class="tab md-ripple" data-tab="fas" type="button">帧率</button>
+  <button class="tab md-ripple" data-tab="mem" type="button">内存</button>
+  <button class="tab md-ripple" data-tab="touch" type="button">触摸</button>
+  <button class="tab md-ripple" data-tab="audio" type="button">音频</button>
+  <button class="tab md-ripple" data-tab="charge" type="button">充电</button>
+  <button class="tab md-ripple" data-tab="more" type="button">更多</button>
+  <span class="tab-indicator" id="tab-indicator"></span>
+</nav>
+
+<main>
+  <section class="panel active" id="panel-home">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">一键模式</h2><span class="support">按需应用；还原范围见说明</span></div>
+      <div class="grid2">
+        <button class="filled-button md-ripple" data-cmd="smooth" type="button">日常</button>
+        <button class="tonal-button md-ripple" data-cmd="game" type="button">游戏</button>
+        <button class="tonal-button md-ripple" data-cmd="sched powersave" type="button">省电</button>
+        <button class="outlined-button danger md-ripple" data-cmd="stock" type="button">还原</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">状态</h2><span class="support">show</span></div>
+      <pre id="status" class="out">点右上角刷新读取…</pre>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-sched">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">调度档位</h2><span class="support">Unisoc uclamp 模型</span></div>
+      <div class="segmented" id="sched-seg">
+        <button class="md-ripple" data-cmd="sched balance" type="button">均衡</button>
+        <button class="md-ripple" data-cmd="sched performance" type="button">性能</button>
+        <button class="md-ripple" data-cmd="sched fast" type="button">极速</button>
+        <button class="md-ripple" data-cmd="sched powersave" type="button">省电</button>
+      </div>
+      <pre id="out-sched" class="out hidden"></pre>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-fas">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">FAS 帧率感知</h2><span class="support">内核 FEAS 风格 · 默认关</span></div>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">总开关</span><span class="support">vblank 驱动 · 负载×预算归一化 · 天花板调频 · 250ms 无帧自动释放</span></span>
+        <span class="md-switch"><input type="checkbox" id="fas-on"><span class="track"></span></span>
+      </label>
+      <div class="grid2">
+        <button class="filled-button md-ripple" data-cmd="fas preset smooth" type="button">日常</button>
+        <button class="tonal-button md-ripple" data-cmd="fas preset game" type="button">游戏</button>
+        <button class="tonal-button md-ripple" data-cmd="fas preset video" type="button">视频省电</button>
+        <button class="tonal-button md-ripple" data-cmd="fas preset pin60" type="button">锁 60 档</button>
+      </div>
+      <pre id="out-fas" class="out hidden"></pre>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">实时状态</h2><span class="support">fps/帧间隔/占用/jank/天花板</span></div>
+      <pre id="fas-live" class="out">进入本页自动读取…</pre>
+      <div class="grid2" style="margin-top:12px">
+        <button class="tonal-button md-ripple" id="btn-fas-live" type="button">开始 1s 轮询</button>
+        <button class="text-button md-ripple" data-cmd="fas status" data-target="fas-live" type="button">手动刷新</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">FEAS 验证</h2><span class="support">performance 调速器判别法</span></div>
+      <p class="support block">锁 performance 后运行典型应用（王者荣耀等）：有 FAS 时中大核不钉死最高频、沿天花板带状波动且曲线基本重合；无 FAS 则与常规 performance 无异。测完记得还原。</p>
+      <div class="grid2">
+        <button class="tonal-button md-ripple" data-cmd="fas testperf on" type="button">锁 performance</button>
+        <button class="outlined-button danger md-ripple" data-cmd="fas testperf off" type="button">还原 schedutil</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">高级旋钮</h2><span class="support">/sys/kernel/tca_fas</span></div>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">自适应帧率档</span><span class="support">关 = 固定 target_fps 钉帧率</span></span>
+        <span class="md-switch"><input type="checkbox" id="fas-adaptive" checked><span class="track"></span></span>
+      </label>
+      <div class="field-row">
+        <label class="text-field"><span>目标帧率 fps（固定模式）</span><input type="number" id="f-fps" placeholder="60"></label>
+        <button class="tonal-button md-ripple" data-run="fas-fps" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>Jank 余量 µs</span><input type="number" id="f-margin" placeholder="1500"></label>
+        <button class="tonal-button md-ripple" data-run="fas-margin" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>性能余量 headroom %</span><input type="number" id="f-headroom" placeholder="125"></label>
+        <button class="tonal-button md-ripple" data-run="fas-headroom" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>护栏增速 kHz/ms</span><input type="number" id="f-gain" placeholder="40000"></label>
+        <button class="tonal-button md-ripple" data-run="fas-gain" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>平滑 smooth_shift（1-6，大=更平滑）</span><input type="number" id="f-smooth" placeholder="3"></label>
+        <button class="tonal-button md-ripple" data-run="fas-smooth" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>天花板下限 min_pct %</span><input type="number" id="f-minpct" placeholder="30"></label>
+        <button class="tonal-button md-ripple" data-run="fas-minpct" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>地板 min_khz（0=关）</span><input type="number" id="f-minkhz" placeholder="0"></label>
+        <button class="tonal-button md-ripple" data-run="fas-minkhz" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>天花板上限 max_khz（0=跟硬件）</span><input type="number" id="f-maxkhz" placeholder="0"></label>
+        <button class="tonal-button md-ripple" data-run="fas-maxkhz" type="button">应用</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-mem">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">内存状态</h2><button class="text-button md-ripple" data-cmd="mem status" data-target="out-mem" type="button">刷新</button></div>
+      <pre id="out-mem" class="out hidden"></pre>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">内存写入已撤回</h2><span class="support">0.5.2 安全版本</span></div>
+      <p class="support" style="margin:4px 0 10px">旧版按命令行/根路径猜测容器归属不安全。自动收容、守护启动、限额、run 和全局内存预设均已禁用，等待验证设备 cgroup 布局与归属；不保证 Android 不受 OOM 影响。</p>
+      <button class="outlined-button md-ripple" data-cmd="mem guard off" data-target="out-mem" type="button">停止旧收容守护</button>
+      <p class="support" style="margin-top:8px">仅删除标志，让旧循环在当前扫描/休眠结束后退出；不按 PID 杀进程、不迁移进程。已有组和内存限制仍保留，旧全局设置不自动还原。</p>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">ART 属性诊断 / 旧配置回滚</h2><span class="support">回滚后须完整重启</span></div>
+      <p class="support" style="margin:4px 0 10px">GC 预设、即时写入和软重启已撤回。属性服务读数不能证明现有 ART/zygote 使用的堆配置，不承诺降低 GC 开销。回滚只移除本模块旧版设置的四个键；其他模块仍可能覆盖，不能保证原厂值。</p>
+      <div class="grid2">
+        <button class="tonal-button md-ripple" data-cmd="gc status" data-target="out-mem" type="button">读取 GC 属性</button>
+        <button class="outlined-button md-ripple" data-cmd="gc rollback" data-target="out-mem" type="button">移除旧 GC 配置（需重启）</button>
+      </div>
+    </div>
+  </section>
+  <section class="panel" id="panel-touch">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">触摸</h2><span class="support">默认关闭</span></div>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">Touch Boost</span><span class="support">触摸时锁频，抬手前保持</span></span>
+        <span class="md-switch"><input type="checkbox" id="t-boost"><span class="track"></span></span>
+      </label>
+      <div class="field-row">
+        <label class="text-field"><span>Boost 频率 kHz</span><input type="number" id="t-freq" placeholder="1800000"></label>
+        <button class="tonal-button md-ripple" data-run="touch-freq" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>Boost 保持 ms</span><input type="number" id="t-ms" placeholder="80"></label>
+        <button class="tonal-button md-ripple" data-run="touch-ms" type="button">应用</button>
+      </div>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">uclamp.min 抬升</span><span class="support">触摸时抬 top-app</span></span>
+        <span class="md-switch"><input type="checkbox" id="t-uclamp"><span class="track"></span></span>
+      </label>
+      <div class="field-row">
+        <label class="text-field"><span>uclamp 百分比</span><input type="number" id="t-pct" placeholder="60"></label>
+        <button class="tonal-button md-ripple" data-run="touch-pct" type="button">应用</button>
+      </div>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">触摸 IRQ 绑大核</span><span class="support">中断亲和性</span></span>
+        <span class="md-switch"><input type="checkbox" id="t-aff"><span class="track"></span></span>
+      </label>
+      <div class="field-row">
+        <label class="text-field"><span>IRQ CPU</span><input type="number" id="t-cpu" placeholder="7"></label>
+        <button class="tonal-button md-ripple" data-run="touch-cpu" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>触摸浅休眠 μs</span><input type="number" id="t-idle" placeholder="0=关,建议100~300"></label>
+        <button class="tonal-button md-ripple" data-run="touch-idle" type="button">应用</button>
+      </div>
+      <div class="divider"></div>
+      <div class="grid2">
+        <button class="filled-button md-ripple" data-cmd="touch all" type="button">全部打开</button>
+        <button class="outlined-button danger md-ripple" data-cmd="touch off" type="button">全部关闭</button>
+      </div>
+      <pre id="out-touch" class="out hidden"></pre>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-audio">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">音频低延迟</h2><span class="support">RT + 大核地板</span></div>
+      <div class="grid2">
+        <button class="filled-button md-ripple" data-cmd="audio" type="button">应用低延迟</button>
+        <button class="outlined-button danger md-ripple" data-cmd="audio off" type="button">还原</button>
+      </div>
+      <div class="divider"></div>
+      <div class="card-head"><h2 class="title-medium">CPU idle</h2><span class="support">禁深 C-state</span></div>
+      <p class="support block">锁定会明显费电，用完请释放。</p>
+      <div class="grid2">
+        <button class="tonal-button md-ripple" data-cmd="audio idle on" type="button">锁定</button>
+        <button class="text-button md-ripple" data-cmd="audio idle off" type="button">释放</button>
+      </div>
+      <pre id="out-audio" class="out hidden"></pre>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-charge">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">充电状态</h2><span class="support">原厂 charger-manager</span></div>
+      <pre id="charge-status" class="out">点刷新读取…</pre>
+      <div class="grid2" style="margin-top:12px">
+        <button class="tonal-button md-ripple" data-cmd="charge show" data-target="charge-status" type="button">刷新状态</button>
+        <button class="filled-button md-ripple" data-cmd="charge cool 15000 2000" type="button">一键降温</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">充电限制</h2><span class="support">功率 / 电流 / 限充</span></div>
+      <div class="field-row">
+        <label class="text-field"><span>功率墙 mW</span><input type="number" id="c-mw" placeholder="15000"></label>
+        <button class="tonal-button md-ripple" data-run="charge-power" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>电流墙 mA</span><input type="number" id="c-ma" placeholder="2000"></label>
+        <button class="tonal-button md-ripple" data-run="charge-current" type="button">应用</button>
+      </div>
+      <div class="field-row">
+        <label class="text-field"><span>限充 %</span><input type="number" id="c-pct" placeholder="80"></label>
+        <button class="filled-button md-ripple" data-run="charge-limit" type="button">开启</button>
+        <button class="text-button md-ripple" data-cmd="charge limit stop" type="button">停止</button>
+      </div>
+      <div class="divider"></div>
+      <div class="grid2">
+        <button class="outlined-button md-ripple" data-cmd="charge stop on" type="button">停充</button>
+        <button class="outlined-button md-ripple" data-cmd="charge stop off" type="button">恢复充电</button>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <button class="outlined-button md-ripple" data-cmd="charge jeita on" type="button">JEITA 开</button>
+        <button class="outlined-button md-ripple" data-cmd="charge jeita off" type="button">JEITA 关</button>
+      </div>
+      <div class="divider"></div>
+      <button class="outlined-button danger md-ripple full" data-cmd="charge restore" type="button">还原充电设置</button>
+      <pre id="out-charge" class="out hidden"></pre>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-more">
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">网络 / I-O</h2><span class="support">可选</span></div>
+      <div class="grid2">
+        <button class="tonal-button md-ripple" data-cmd="net" type="button">BBR + fq_codel</button>
+        <button class="tonal-button md-ripple" data-cmd="io" type="button">BFQ + 预读</button>
+      </div>
+      <pre id="out-netio" class="out hidden"></pre>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">开机自动应用</h2><span class="support">service.sh 读取</span></div>
+      <label class="text-field select-field">
+        <span>档位</span>
+        <select id="b-profile">
+          <option value="">不应用</option>
+          <option value="smooth">日常</option>
+          <option value="game">游戏</option>
+          <option value="sched powersave">省电</option>
+          <option value="touch all">触摸全开</option>
+          <option value="net">网络 BBR</option>
+        </select>
+      </label>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">同时限充 80%</span><span class="support">charge limit 80</span></span>
+        <span class="md-switch"><input type="checkbox" id="b-limit"><span class="track"></span></span>
+      </label>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">同时开 FAS 帧率感知</span><span class="support">内核需支持，预设见下</span></span>
+        <span class="md-switch"><input type="checkbox" id="b-fas"><span class="track"></span></span>
+      </label>
+      <label class="text-field select-field">
+        <span>FAS 预设</span>
+        <select id="b-fas-preset">
+          <option value="smooth">日常</option>
+          <option value="game">游戏</option>
+          <option value="video">视频省电</option>
+          <option value="pin60">锁 60 档</option>
+        </select>
+      </label>
+      <p class="support">旧 mem/GC 开机写入命令会被拒绝，不会自动启用。旧守护标志在开机服务运行时移除；旧 GC 配置请在内存页手动回滚后完整重启。</p>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">同时锁音频低延迟</span><span class="support">比较费电</span></span>
+        <span class="md-switch"><input type="checkbox" id="b-audio"><span class="track"></span></span>
+      </label>
+      <div class="grid2" style="margin-top:8px">
+        <button class="filled-button md-ripple" id="btn-save-boot" type="button">保存</button>
+        <button class="outlined-button danger md-ripple" id="btn-clear-boot" type="button">清除</button>
+      </div>
+      <pre id="boot-view" class="out">读取中…</pre>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="title-medium">动态取色</h2><span class="support">Material You / 壁纸种子</span></div>
+      <label class="switch-row md-ripple">
+        <span class="sw-text"><span class="body-large">从壁纸取色</span><span class="support" id="dyn-seed">未取色</span></span>
+        <span class="md-switch"><input type="checkbox" id="dyn-on"><span class="track"></span></span>
+      </label>
+      <label class="text-field select-field">
+        <span>配色风格</span>
+        <select id="dyn-variant">
+          <option value="tonal">Tonal Spot（系统默认）</option>
+          <option value="vibrant">Vibrant</option>
+          <option value="expressive">Expressive</option>
+          <option value="content">Content</option>
+          <option value="fidelity">Fidelity</option>
+          <option value="neutral">Neutral</option>
+          <option value="rainbow">Rainbow</option>
+          <option value="monochrome">Monochrome</option>
+        </select>
+      </label>
+      <button class="outlined-button md-ripple full" id="btn-dyn-refresh" type="button">从壁纸重新取色</button>
+      <p class="support" style="margin:10px 0 0">种子读自系统已提取的壁纸主色（wallpaper_info.xml），再用 Material Color Utilities 生成整套 MD3 角色色。</p>
+    </div>
+  </section>
+</main>
+
+<section class="sheet" id="sheet">
+  <button class="sheet-head md-ripple" id="sheet-toggle" type="button">
+    <span class="grabber"></span>
+    <span class="sheet-title"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-5v-2h5v2zM7.5 17l-1.41-1.41L8.67 13l-2.58-2.59L7.5 9l4 4-4 4z"/></svg>输出</span>
+    <span class="chevron"><svg viewBox="0 0 24 24"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg></span>
+  </button>
+  <div class="sheet-body">
+    <div class="sheet-actions"><button class="text-button md-ripple" id="btn-clear" type="button">清空</button></div>
+    <pre id="log" class="out log"></pre>
+  </div>
+</section>
+
+<div class="snackbar" id="snackbar" role="status"></div>
+
+<script src="vendor/mcu.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
